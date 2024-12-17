@@ -1,0 +1,42 @@
+services:
+
+ besu:
+   build:
+     context: ./
+     dockerfile: ./besu/Dockerfile
+   ports:
+     - "8545:8545"
+     - "8546:8546"
+     - "30303:30303"
+   healthcheck:
+      test: exit 0
+      interval: 20s
+      retries: 2
+      timeout: 10s
+   networks:
+     - reclaim-demo
+
+ deploy:
+    build:
+      context: ./hardhat
+    depends_on:
+      besu:
+        condition: service_healthy
+    networks:
+      - reclaim-demo
+    restart: "no"
+
+ frontend:
+    build:
+      context: ./frontend
+    depends_on:
+      deploy:
+        condition: service_completed_successfully
+    ports:
+      - "3000:3000"
+    networks:
+      - reclaim-demo  
+
+networks:
+ reclaim-demo:
+   driver: bridge

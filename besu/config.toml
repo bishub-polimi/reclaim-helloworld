@@ -1,0 +1,11 @@
+genesis-file="/data/genesis.json"
+data-path="/tmp"
+miner-enabled=true
+miner-coinbase="fe3b557e8fb62b89f4916b721be55ceb828dbd73"
+min-gas-price=0 
+rpc-http-enabled=true
+rpc-ws-enabled=true
+graphql-http-enabled=true
+host-allowlist=["all"]
+rpc-http-cors-origins=["all"]
+revert-reason-enabled=true
