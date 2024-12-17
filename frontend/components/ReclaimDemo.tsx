@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import QRCode from 'react-qr-code';
 import { ReclaimProofRequest,transformForOnchain } from '@reclaimprotocol/js-sdk';
-import { Contract, JsonRpcProvider } from "ethers";
+import { Contract, JsonRpcProvider, Wallet } from "ethers";
 import artifacts from "../abi/Attestor.json";
  
 function ReclaimDemo() {
@@ -75,12 +75,11 @@ function ReclaimDemo() {
   },[])
 
   useEffect(()=>{
-    provider?.getSigner().then(
-      signer => {
-        setContract(new Contract(process.env.NEXT_PUBLIC_RECLAIM_ADDRESS!,artifacts.abi,signer))
-        console.log(proofs)
-      }
-    )
+    if(provider){
+      const wallet = Wallet.createRandom();
+      const signer = wallet.connect(provider);
+      setContract(new Contract(process.env.NEXT_PUBLIC_RECLAIM_ADDRESS!,artifacts.abi,signer));
+    }
   },[provider])
  
   return (
