@@ -8,6 +8,4 @@ RUN npm install
 
 COPY . .
 
-RUN npm run compile
-
-RUN npm run deploy:attestor
+CMD npm run deploy:attestor
