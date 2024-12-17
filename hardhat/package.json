@@ -2,7 +2,7 @@
   "name": "hardhat-project",
   "scripts": {
     "compile": "npx hardhat compile",
-    "deploy:attestor": "npx hardhat ignition deploy ignition/modules/Attestor.ts --network localhost"
+    "deploy:attestor": "npx hardhat ignition deploy ignition/modules/Attestor.ts --network besu"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
