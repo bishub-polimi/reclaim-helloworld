@@ -17,6 +17,8 @@ services:
      - reclaim-demo
 
  deploy:
+    environment:
+      - HARDHAT_IGNITION_CONFIRM_DEPLOYMENT=false
     build:
       context: ./hardhat
     depends_on:
