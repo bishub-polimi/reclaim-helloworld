@@ -5,7 +5,7 @@ import QRCode from 'react-qr-code';
 import { Proof, ReclaimProofRequest,transformForOnchain } from '@reclaimprotocol/js-sdk';
 import { createPublicClient, defineChain, http, PublicClient, } from 'viem'
 import artifacts from "../abi/Attestor.json";
-import addresses from "shared/data/addresses.json";
+import addresses from "../shared/data/addresses.json";
 
 export const custom = /*#__PURE__*/ defineChain({
   id: parseInt(process.env.NEXT_PUBLIC_CHAIN_ID!),

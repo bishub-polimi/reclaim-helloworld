@@ -24,6 +24,8 @@ services:
     depends_on:
       besu:
         condition: service_healthy
+    volumes:
+      - shared-volume:/shared/data
     networks:
       - reclaim-demo
     restart: "no"
@@ -36,9 +38,14 @@ services:
         condition: service_completed_successfully
     ports:
       - "3000:3000"
+    volumes:
+      - shared-volume:/app/shared/data
     networks:
       - reclaim-demo  
 
 networks:
  reclaim-demo:
    driver: bridge
+
+volumes:
+  shared-volume:
