@@ -5,6 +5,7 @@ import QRCode from 'react-qr-code';
 import { Proof, ReclaimProofRequest,transformForOnchain } from '@reclaimprotocol/js-sdk';
 import { createPublicClient, defineChain, http, PublicClient, } from 'viem'
 import artifacts from "../abi/Attestor.json";
+import addresses from "shared/data/addresses.json";
 
 export const custom = /*#__PURE__*/ defineChain({
   id: parseInt(process.env.NEXT_PUBLIC_CHAIN_ID!),
@@ -81,7 +82,7 @@ function ReclaimDemo() {
     console.log(transformForOnchain(proof!))
 
     const data = await publicClient!.readContract({
-      address: process.env.NEXT_PUBLIC_RECLAIM_ADDRESS! as `0x${string}`,
+      address: addresses["Attestor"] as `0x${string}`,
       abi: artifacts.abi,
       functionName: 'verifyProof',
       args: [transformForOnchain(proof!)]
