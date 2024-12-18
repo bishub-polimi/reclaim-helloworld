@@ -2,18 +2,30 @@
 
 import { useEffect, useState } from 'react';
 import QRCode from 'react-qr-code';
-import { ReclaimProofRequest,transformForOnchain } from '@reclaimprotocol/js-sdk';
-import { Contract, JsonRpcProvider, Wallet } from "ethers";
+import { Proof, ReclaimProofRequest,transformForOnchain } from '@reclaimprotocol/js-sdk';
+import { createPublicClient, defineChain, http, PublicClient, } from 'viem'
 import artifacts from "../abi/Attestor.json";
+
+export const custom = /*#__PURE__*/ defineChain({
+  id: parseInt(process.env.NEXT_PUBLIC_CHAIN_ID!),
+  name: process.env.NEXT_PUBLIC_CHAIN_NAME!,
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Ether',
+    symbol: 'ETH',
+  },
+  rpcUrls: {
+    default: { http: [process.env.NEXT_PUBLIC_CHAIN_URL!] },
+  },
+})
  
 function ReclaimDemo() {
   // State to store the verification request URL
   const [requestUrl, setRequestUrl] = useState('');
-  const [proofs, setProofs] = useState([]);
+  const [proof, setProof] = useState<Proof>();
   const [hasProof, setHasProof] = useState(false);
-  const [provider, setProvider] = useState<JsonRpcProvider>();
-  const [contract, setContract] = useState<Contract>();
-  
+  const [publicClient, setPublicClient] = useState<PublicClient>();
+
  
   const getVerificationReq = async () => {
     // Your credentials from the Reclaim Developer Portal
@@ -33,17 +45,17 @@ function ReclaimDemo() {
     // Start listening for proof submissions
     await reclaimProofRequest.startSession({
       // Called when the user successfully completes the verification
-      onSuccess: (proofs) => {
-        if (proofs) {
-          if (typeof proofs === 'string') {
+      onSuccess: (proof) => {
+        if (proof) {
+          if (typeof proof === 'string') {
             // When using a custom callback url, the proof is returned to the callback url and we get a message instead of a proof
-            console.log('SDK Message:', proofs);
-            setProofs([proofs]);
+            console.log('SDK Message:', proof);
+            setProof(proof);
             setHasProof(true);
-          } else if (typeof proofs !== 'string') {
+          } else if (typeof proof !== 'string') {
             // When using the default callback url, we get a proof object in the response
-            console.log('Verification success', proofs?.claimData.context);
-            setProofs(proofs);
+            console.log('Proof generation success', proof?.claimData.context);
+            setProof(proof);
             setHasProof(true);
           }
         }
@@ -65,22 +77,29 @@ function ReclaimDemo() {
   };
 
   const getSolidityProof = async () => {
-    console.log(JSON.stringify(transformForOnchain(proofs)))
-    const res = await contract!.verifyProof(transformForOnchain(proofs));
-    alert(res);
+
+    console.log(transformForOnchain(proof!))
+
+    const data = await publicClient!.readContract({
+      address: process.env.NEXT_PUBLIC_RECLAIM_ADDRESS! as `0x${string}`,
+      abi: artifacts.abi,
+      functionName: 'verifyProof',
+      args: [transformForOnchain(proof!)]
+    }); 
+
+    console.log(data)
+
+    alert("On-chain verification successful");
+
   };
 
   useEffect(()=>{
-    setProvider(new JsonRpcProvider());
+    const publicClient = createPublicClient({ 
+      chain: custom,
+      transport: http(process.env.NEXT_PUBLIC_CHAIN_URL)
+    })
+    setPublicClient(publicClient);
   },[])
-
-  useEffect(()=>{
-    if(provider){
-      const wallet = Wallet.createRandom();
-      const signer = wallet.connect(provider);
-      setContract(new Contract(process.env.NEXT_PUBLIC_RECLAIM_ADDRESS!,artifacts.abi,signer));
-    }
-  },[provider])
  
   return (
     <>
@@ -91,11 +110,11 @@ function ReclaimDemo() {
         </div>
       )}
       <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full' onClick={getVerificationReq}>Get Verification Request</button>
-      {proofs && hasProof && (
+      {proof && hasProof && (
         <div className='flex flex-col space-y-4 mt-6'>
-          <h2 className='text-center font-bold'>Verification Successful!</h2>
-          <div className='w-full overflow-x-auto'>{JSON.stringify(proofs, null, 2)}</div>
-          <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full self-center' onClick={getSolidityProof}>Get Solidity Proof</button>
+          <h2 className='text-center font-bold'>Proof Generation Successful!</h2>
+          <div className='w-full overflow-x-auto'>{JSON.stringify(proof, null, 2)}</div>
+          <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full self-center' onClick={getSolidityProof}>Verify Proof On-Chain</button>
         </div>
       )}
     </>
