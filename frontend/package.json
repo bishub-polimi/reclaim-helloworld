@@ -9,12 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@rainbow-me/rainbowkit": "^2.2.1",
     "@reclaimprotocol/js-sdk": "^2.1.2",
+    "@tanstack/react-query": "^5.62.8",
     "next": "15.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-qr-code": "^2.0.15",
-    "viem": "^2.21.55"
+    "viem": "^2.21.55",
+    "wagmi": "^2.14.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
