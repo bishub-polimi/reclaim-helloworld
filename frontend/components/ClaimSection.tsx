@@ -1,5 +1,5 @@
 import { Proof, transformForOnchain } from "@reclaimprotocol/js-sdk";
-import { useAccount, usePublicClient, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import { useAccount, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import artifacts from "../abi/Attestor.json";
 import addresses from "../shared/data/addresses.json";
 
