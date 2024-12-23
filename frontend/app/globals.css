@@ -27,3 +27,7 @@ body {
 body > [data-rk] {
   @apply flex flex-col h-full;
 }
+
+.nextjs-toast {
+  display: none;
+}
