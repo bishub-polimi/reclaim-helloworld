@@ -151,7 +151,7 @@ export default class GameScene extends Phaser.Scene {
         this.scoreText = this.add.text(0, 0, "score : 0").setScrollFactor(0)
         this.debugText = {
             //pointPosition: this.add.text(0, 50, "指针:").setScrollFactor(0),
-            playerLife: this.add.text(120, 0, "lifes:").setScrollFactor(0)
+            playerLife: this.add.text(120, 0, "lives:").setScrollFactor(0)
         }
 
         // 事件的监听
@@ -226,7 +226,7 @@ export default class GameScene extends Phaser.Scene {
     updateText() {
         this.scoreText.setText("score :" + this.score)
         //this.debugText.pointPosition.setText("指针:" + ~~this.crosshair.x + "," + ~~this.crosshair.y)
-        this.debugText.playerLife.setText("lifes:" + this.player.life)
+        this.debugText.playerLife.setText("lives:" + this.player.life)
     }
 
     // 创建动画
