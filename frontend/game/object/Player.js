@@ -23,6 +23,15 @@ export default class PlayerSprite extends Phaser.Physics.Arcade.Sprite {
         this.direction = 1 // 向右
         this.speed = 150
         this.jumpSpeed = 210
+
+        let res = localStorage.getItem("sustainabilityScore");
+            if(JSON.parse(res) > 1){
+                this.jumpSpeed = 400
+                if(JSON.parse(res) > 2){
+                    this.speed = 350
+                }
+            }
+
         this.life = gameConfig.life || 3  //重玩的话继承原来的生命值
         this.alive = true
         this.isJumping = false
@@ -75,8 +84,8 @@ export default class PlayerSprite extends Phaser.Physics.Arcade.Sprite {
         this.timeManage.nowTime = time
 
         if(!this.hasSkin){
-            let res = localStorage.getItem("hasToken");
-            if(JSON.parse(res) == true){
+            let res = localStorage.getItem("sustainabilityScore");
+            if(JSON.parse(res) > 0){
                 this.hasSkin = true;
             }
         }

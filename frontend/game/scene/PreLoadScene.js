@@ -71,6 +71,10 @@ export default class PreLoadScene extends Phaser.Scene {
         })
         // 临时为了不让蘑菇出错
         this.load.image("initTexture", "resource/img/Items/coin.png")
+        this.load.image("heart","resource/icons/heart.png")
+        this.load.image("perkOne","resource/icons/skin.png")
+        this.load.image("perkTwo","resource/icons/perk2.png")
+        this.load.image("perkThree","resource/icons/perk3.png")
 
         this.load.spritesheet('koopa_green', 'resource/img/Enemies/Koopa/koopa_green.png', {
             frameWidth: 16,

@@ -48,20 +48,47 @@ const config = {
 export default function GameSection() {
 
     const account = useAccount();
-    const { data: balance } = useReadContract({
+    
+    const { data: b1 } = useReadContract({
         address: addresses["Attestor"] as `0x${string}`,
         abi: artifacts.abi,
         functionName: 'balanceOf',
         args: [account.address,0],
-    })
+      })
+  
+      const { data: b2 } = useReadContract({
+          address: addresses["Attestor"] as `0x${string}`,
+          abi: artifacts.abi,
+          functionName: 'balanceOf',
+          args: [account.address,1],
+      })
+  
+      const { data: b3 } = useReadContract({
+        address: addresses["Attestor"] as `0x${string}`,
+        abi: artifacts.abi,
+        functionName: 'balanceOf',
+        args: [account.address,2],
+      })
 
     const game = usePhaserGame(config);
 
     useEffect(()=>{
-        if(balance && balance > BigInt(0)){
-            localStorage.setItem("hasToken", "true")
-        }     
-    }, [balance]) 
+        let count = 0;
+
+        if(b1 && b1 > BigInt(0)){
+            count++;
+        }  
+
+        if(b2 && b2 > BigInt(0)){
+            count++;
+        } 
+
+        if(b3 && b3 > BigInt(0)){
+            count++;
+        } 
+
+        localStorage.setItem("sustainabilityScore", JSON.stringify(count))   
+    }, [b1,b2,b3]) 
 
     return (
         <div className="w-full">

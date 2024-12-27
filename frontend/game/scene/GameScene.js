@@ -148,10 +148,20 @@ export default class GameScene extends Phaser.Scene {
          *  值为0表示即使相机移动也不会移动。
          *  但实际测试为0会随着镜头移动而移动,不论设置为0还是1 or 其他 文本的x,y都不改变
          */
-        this.scoreText = this.add.text(0, 0, "score : 0").setScrollFactor(0)
+        //this.scoreText = this.add.text(0, 0, "score : 0").setScrollFactor(0)
+        this.scoreText = this.add.text(80, 4, "0").setScrollFactor(0)
+
+        for(var i=0; i<this.player.life; i++){
+            this.livesIcons = this.add.image(13*(i+1), 11, "heart").setScale(0.7).setScrollFactor(0)
+        }
+
+        for(var i=0; i<this.player.life; i++){
+            this.livesIcons = this.add.image(13*(i+1), 11, "heart").setScale(0.7).setScrollFactor(0)
+        }
+        
         this.debugText = {
             //pointPosition: this.add.text(0, 50, "指针:").setScrollFactor(0),
-            playerLife: this.add.text(120, 0, "lives:").setScrollFactor(0)
+            //playerLife: this.add.text(120, 0, "lives:").setScrollFactor(0)
         }
 
         // 事件的监听
@@ -224,9 +234,26 @@ export default class GameScene extends Phaser.Scene {
 
     //  一些 HUD 文本
     updateText() {
-        this.scoreText.setText("score :" + this.score)
+        this.scoreText.setText(this.score)
         //this.debugText.pointPosition.setText("指针:" + ~~this.crosshair.x + "," + ~~this.crosshair.y)
-        this.debugText.playerLife.setText("lives:" + this.player.life)
+        //this.debugText.playerLife.setText("lives:" + this.player.life)
+        for(var i=0; i<this.player.life; i++){
+            this.livesIcons = this.add.image(13*(i+1), 11, "heart").setScale(0.7).setScrollFactor(0)
+        }
+
+        let score = localStorage.getItem("sustainabilityScore")
+        if(score){
+            score = JSON.parse(score)
+            if(score > 0){
+                this.perkOne = this.add.image(160, 11, "perkOne").setScale(0.7).setScrollFactor(0)
+                if(score > 1){
+                    this.perkTwo = this.add.image(173, 11, "perkTwo").setScale(0.7).setScrollFactor(0)
+                    if(score > 2){
+                        this.perkThree = this.add.image(186, 11, "perkThree").setScale(0.7).setScrollFactor(0)
+                    }
+                }
+            }
+        }
     }
 
     // 创建动画

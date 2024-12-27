@@ -1,13 +1,14 @@
 'use client'
 
 import Header from '@/components/Header';
-import ReclaimSection from '@/components/ReclaimSection';
+import Home from '@/components/Home';
 
-export default function Home() {
+export default function App() {
   return (
     <>
       <Header backButton={false} gameButton={true} />
-      <ReclaimSection />
+      {/* <ReclaimSection /> */}
+      <Home />
     </>
   )
 }
