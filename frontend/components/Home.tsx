@@ -10,7 +10,7 @@ export default function Home() {
     return (
       <>
         {
-            account.address ? 
+            account.status == 'connected' ?
                 <UserProfile />
                 :
                 <div className="flex justify-center items-center h-full w-full">Please connect your wallet</div>
