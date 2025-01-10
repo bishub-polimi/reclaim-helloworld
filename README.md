@@ -28,4 +28,6 @@ NEXT_PUBLIC_PROVIDER_ID= #PROVIDER ID provided by Reclaim Developer Portal
 NEXT_PUBLIC_CHAIN_NAME= #chain name (default Besu)
 NEXT_PUBLIC_CHAIN_ID= #chain ID (default 1337)
 NEXT_PUBLIC_CHAIN_URL= #chain URL (default http://besu:8545)
+
+NEXT_PUBLIC_PAYMASTER_AND_BUNDLER_ENDPOINT=https://api.developer.coinbase.com/rpc/v1/base-sepolia/{your-api-key}
 ```
