@@ -8,7 +8,10 @@ async function main() {
     const rawData = fs.readFileSync(path.join(process.cwd(), `/ignition/deployments/${list[0]}/deployed_addresses.json`), 'utf8');
     const jsonData = JSON.parse(rawData);
 
-    const addresses = { Attestor: jsonData["Attestor#Attestor"] };
+    const addresses = { 
+        Attestor: jsonData["Attestor#Attestor"],
+        Testmint: jsonData["Testmint#Testmint"]
+    };
 
     const sharedDir = "/shared/data";
 

@@ -2,13 +2,15 @@
   "name": "hardhat-project",
   "scripts": {
     "compile": "npx hardhat compile",
-    "deploy:attestor": "npx hardhat ignition deploy ignition/modules/Attestor.ts --network besu && node save-address.js"
+    "deploy:attestor": "npx hardhat ignition deploy ignition/modules/Attestor.ts --network besu && node save-address.js",
+    "deploy:testmint": "npx hardhat ignition deploy ignition/modules/Testmint.ts --network besu && node save-address.js"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "hardhat": "^2.22.17"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^4.9.2"
+    "@openzeppelin/contracts": "^4.9.2",
+    "dotenv": "^16.4.7"
   }
 }

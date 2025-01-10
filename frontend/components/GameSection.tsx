@@ -7,9 +7,13 @@ import BlankScene from "../game/scene/BlankScene"
 import Phaser from "phaser";
 import { usePhaserGame } from "@/hooks/usePhaserGame"
 import { useEffect } from "react"
-import { useAccount, useReadContract } from "wagmi"
+import { useAccount, useReadContract, useChainId } from "wagmi"
 import artifacts from "../abi/Attestor.json";
 import addresses from "../shared/data/addresses.json";
+
+const CONTRACT_ADDRESS = "0xFf055825cDaB483114A3cAaA6Fbd1279b18AD304"; 
+
+
 
 const config = {
     // For more settings see <https://github.com/photonstorm/phaser/blob/master/src/boot/Config.js>
@@ -48,23 +52,28 @@ const config = {
 export default function GameSection() {
 
     const account = useAccount();
+
+    const chainId = useChainId();
+    const attestorAddress = chainId === 1337 
+            ? addresses["Attestor#Attestor"] as `0x${string}`
+            : CONTRACT_ADDRESS as `0x${string}`;
     
     const { data: b1 } = useReadContract({
-        address: addresses["Attestor"] as `0x${string}`,
+        address: attestorAddress,
         abi: artifacts.abi,
         functionName: 'balanceOf',
         args: [account.address,0],
       })
   
       const { data: b2 } = useReadContract({
-          address: addresses["Attestor"] as `0x${string}`,
+          address: attestorAddress,
           abi: artifacts.abi,
           functionName: 'balanceOf',
           args: [account.address,1],
       })
   
       const { data: b3 } = useReadContract({
-        address: addresses["Attestor"] as `0x${string}`,
+        address: attestorAddress,
         abi: artifacts.abi,
         functionName: 'balanceOf',
         args: [account.address,2],

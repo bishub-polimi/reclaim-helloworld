@@ -7,9 +7,11 @@ import { AiOutlineCheck, AiOutlineCloseCircle } from "react-icons/ai";
 import ReclaimProvider from "./ReclaimProvider";
 import ReclaimQR from "./ReclaimQR";
 import ClaimToken from "./ClaimToken";
-import { useAccount, useReadContract } from "wagmi";
+import { useAccount, useReadContract, useChainId } from "wagmi";
 import addresses from "../shared/data/addresses.json";
 import artifacts from "../abi/Attestor.json";
+
+const CONTRACT_ADDRESS = "0xFf055825cDaB483114A3cAaA6Fbd1279b18AD304"; 
 
 export default function UserProfile() {
 
@@ -23,22 +25,27 @@ export default function UserProfile() {
 
     const account = useAccount();
 
+    const chainId = useChainId();
+    const attestorAddress = chainId === 1337 
+            ? addresses["Attestor#Attestor"] as `0x${string}`
+            : CONTRACT_ADDRESS as `0x${string}`;
+
     const { data: b1 } = useReadContract({
-      address: addresses["Attestor"] as `0x${string}`,
+      address: attestorAddress,
       abi: artifacts.abi,
       functionName: 'balanceOf',
       args: [account.address,0],
     })
 
     const { data: b2 } = useReadContract({
-        address: addresses["Attestor"] as `0x${string}`,
+        address: attestorAddress,
         abi: artifacts.abi,
         functionName: 'balanceOf',
         args: [account.address,1],
     })
 
     const { data: b3 } = useReadContract({
-      address: addresses["Attestor"] as `0x${string}`,
+      address: attestorAddress,
       abi: artifacts.abi,
       functionName: 'balanceOf',
       args: [account.address,2],

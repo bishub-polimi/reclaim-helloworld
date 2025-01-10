@@ -14,7 +14,7 @@ services:
       retries: 2
       timeout: 10s
    networks:
-     - reclaim-demo
+     - reclaim-demo 
 
  deploy:
     environment:
@@ -28,7 +28,7 @@ services:
       - shared-volume:/shared/data
     networks:
       - reclaim-demo
-    restart: "no"
+    restart: on-failure:3
 
  frontend:
     build:

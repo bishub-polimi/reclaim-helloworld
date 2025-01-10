@@ -8,4 +8,4 @@ RUN npm install
 
 COPY . .
 
-CMD npm run deploy:attestor
+CMD npm run deploy:attestor && npm run deploy:testmint 
