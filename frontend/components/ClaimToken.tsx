@@ -24,7 +24,6 @@ export default function ClaimToken(props: ClaimSectionProps) {
             functionName: 'mint',
             args: [
                 account.address,
-               props.id,
                 "0x0000000000000000000000000000000000000000000000000000000000000000",
                 transformForOnchain(props.proof!)
             ],

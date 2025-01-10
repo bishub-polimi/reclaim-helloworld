@@ -49,6 +49,8 @@ export default function UserProfile() {
     const SECOND_PROVIDER_ID = process.env.NEXT_PUBLIC_SECOND_PROVIDER_ID!;
     const THIRD_PROVIDER_ID = process.env.NEXT_PUBLIC_THIRD_PROVIDER_ID!;
 
+    console.log(b1)
+
     return (
       <div className="h-full flex flex-col items-center justify-center px-10 gap-y-8">
         <ReclaimQR requestUrl={requestUrl} />
@@ -81,7 +83,7 @@ export default function UserProfile() {
             </div>
         
             <div className='flex flex-col gap-y-4 h-full'>
-              <h2 className="text-center font-bold">Provider 2</h2>
+              <h2 className="text-center font-bold">Donation</h2>
               {
                 b2 && b2 > BigInt(0) ?
                   <>
@@ -107,7 +109,7 @@ export default function UserProfile() {
             </div>
         
             <div className='flex flex-col gap-y-4 h-full'>
-              <h2 className="text-center font-bold">Provider 3</h2>
+              <h2 className="text-center font-bold">Carbon Footprint</h2>
               {
                 b3 && b3 > BigInt(0) ?
                   <>
