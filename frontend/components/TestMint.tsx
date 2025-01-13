@@ -1,30 +1,57 @@
 import { useAccount, useWriteContract, useWaitForTransactionReceipt, useChainId } from "wagmi";
 import { useWriteContracts } from "wagmi/experimental";
-import { useState } from "react";
+import { useEffect } from "react";
 import artifacts from "../abi/Testmint.json";
 import addresses from "../shared/data/addresses.json";
+import NotificationBanner from "./NotificationBanner";
+import { useNotifications, extractMainHash } from "@/hooks/useNotifications"
+
 
 const CONTRACT_ADDRESS = "0x60dF8978e207969654Ea7C07794A444fcc1Cd01F";
 
+
 export default function TestMint() {
     const account = useAccount();
-    const [smartWalletHash, setSmartWalletHash] = useState<string>();
+    const { notifications, addNotification, removeNotification } = useNotifications();
 
     const chainId = useChainId();
     const testMintAddress = chainId === 1337
         ? addresses["Testmint#Testmint"] as `0x${string}`
         : CONTRACT_ADDRESS as `0x${string}`;
 
-    // hook per eoa
-    const { data: hash, writeContractAsync } = useWriteContract();
-    const { isSuccess: isConfirmed } = useWaitForTransactionReceipt({
-        hash
+    const { data: hash, writeContractAsync, isPending, isSuccess: isSent } = useWriteContract();
+
+    useEffect(() => {
+        if (isSent && hash) {
+            console.log("Transaction sent:", hash);
+            addNotification(`Transazione inviata! In attesa di conferma...`, 'success');
+        }
+    }, [isSent, hash]);
+
+    const { isSuccess: isConfirmed, data: receipt } = useWaitForTransactionReceipt({
+        hash,
+        enabled: !!hash,
     });
 
-    // hook sperimentale per cb smart wallet
-    const { writeContracts } = useWriteContracts({
+    useEffect(() => {
+        if (isConfirmed && receipt) {
+            console.log("Transaction confirmed:", receipt);
+            setTimeout(() => {
+                addNotification(`Token mintato con successo! TX: ${receipt.transactionHash}`, 'success');
+            }, 1500);
+        }
+    }, [isConfirmed, receipt]);
+
+    const { writeContracts, isPending: isPendingCB } = useWriteContracts({
         mutation: {
-            onSuccess: (hash) => setSmartWalletHash(hash)
+            onSuccess: (hash) => {
+                addNotification(`User Operation inviata! In attesa di conferma...`, 'success');
+                
+                setTimeout(() => {
+                    const mainHash = extractMainHash(hash);
+                    addNotification(`Token mintato con successo! User Operation: ${mainHash}`, 'success');
+                }, 1500);
+            }
         }
     });
 
@@ -37,15 +64,11 @@ export default function TestMint() {
 
         try {
             if (account.connector?.type === 'coinbaseWallet') {
-                console.log("account type:", account.connector?.type);
-
                 const capabilities = {
                     paymasterService: {
                         url: process.env.NEXT_PUBLIC_PAYMASTER_AND_BUNDLER_ENDPOINT
                     }
                 };
-
-                console.log(capabilities)
 
                 writeContracts({
                     contracts: [{
@@ -54,7 +77,6 @@ export default function TestMint() {
                         functionName: 'mint',
                         args
                     }],
-
                     capabilities
                 });
             } else {
@@ -67,33 +89,24 @@ export default function TestMint() {
             }
         } catch (error: any) {
             console.error("[TestMint] Error:", error);
+            addNotification("Errore durante il mint: " + error.message, 'error');
         }
     };
 
     return (
         <div className="flex flex-col items-center mt-6">
+            <NotificationBanner
+                notifications={notifications}
+                onClose={removeNotification}
+            />
+
             <button
-                className="bg-green hover:bg-green/80 text-white font-bold py-2 px-4 rounded-full"
+                className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full"
                 onClick={handleMint}
+                disabled={isPending || isPendingCB}
             >
-                Test Mint
+                {isPending || isPendingCB ? 'minting...' : 'Test Mint'}
             </button>
-
-            <div className="mt-4 text-center">
-                {isConfirmed && !smartWalletHash && (
-                    <div>
-                        <span className="font-semibold">Token mintato con tx: </span>
-                        <span className="text-sm opacity-75">{hash}</span>
-                    </div>
-                )}
-
-                {smartWalletHash && (
-                    <div>
-                        <span className="font-semibold">Token mintato con user operation: </span>
-                        <span className="text-sm opacity-75">{smartWalletHash}</span>
-                    </div>
-                )}
-            </div>
         </div>
     );
 }
