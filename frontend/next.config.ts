@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-const isGitHubPages = process.env.IS_GITHUB_PAGES ?  process.env.IS_GITHUB_PAGES : false;
+const isGitHubPages = process.env.IS_GITHUB_PAGES ?  true : false;
 
 const nextConfig: NextConfig = {
   output: 'export',
