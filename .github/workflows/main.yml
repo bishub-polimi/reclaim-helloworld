@@ -1,0 +1,63 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3  # updated to the latest version
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3  # updated to the latest version
+        with:
+          node-version: '20'
+          
+      - name: Install dependencies
+        working-directory: ./frontend  # Ensure the frontend folder is targeted
+        run: npm install
+
+      - name: Set environment variables
+        env:
+          NEXT_PUBLIC_APP_ID: ${{ secrets.NEXT_PUBLIC_APP_ID }}
+          NEXT_PUBLIC_APP_SECRET: ${{ secrets.NEXT_PUBLIC_APP_SECRET }}
+          NEXT_PUBLIC_FIRST_PROVIDER_ID: ${{ secrets.NEXT_PUBLIC_FIRST_PROVIDER_ID }}
+          NEXT_PUBLIC_SECOND_PROVIDER_ID: ${{ secrets.NEXT_PUBLIC_SECOND_PROVIDER_ID }}
+          NEXT_PUBLIC_THIRD_PROVIDER_ID: ${{ secrets.NEXT_PUBLIC_THIRD_PROVIDER_ID }}
+          NEXT_PUBLIC_TOKEN_CONTRACT_ADDRESS: ${{ secrets.NEXT_PUBLIC_TOKEN_CONTRACT_ADDRESS }}
+          NEXT_PUBLIC_PAYMASTER_AND_BUNDLER_ENDPOINT: ${{ secrets.NEXT_PUBLIC_PAYMASTER_AND_BUNDLER_ENDPOINT }}
+          NEXT_PUBLIC_CHAIN_NAME: ${{ secrets.NEXT_PUBLIC_CHAIN_NAME }}
+          NEXT_PUBLIC_CHAIN_ID: ${{ secrets.NEXT_PUBLIC_CHAIN_ID }}
+          NEXT_PUBLIC_CHAIN_URL: ${{ secrets.NEXT_PUBLIC_CHAIN_URL }}
+        run: |
+          echo "NEXT_PUBLIC_APP_ID=${{ secrets.NEXT_PUBLIC_APP_ID }}" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_APP_SECRET=${{ secrets.NEXT_PUBLIC_APP_SECRET }}" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_FIRST_PROVIDER_ID=${{ secrets.NEXT_PUBLIC_FIRST_PROVIDER_ID }}" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_SECOND_PROVIDER_ID=${{ secrets.NEXT_PUBLIC_SECOND_PROVIDER_ID }}" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_THIRD_PROVIDER_ID=${{ secrets.NEXT_PUBLIC_THIRD_PROVIDER_ID }}" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_TOKEN_CONTRACT_ADDRESS=${{ secrets.NEXT_PUBLIC_TOKEN_CONTRACT_ADDRESS }}" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_PAYMASTER_AND_BUNDLER_ENDPOINT=${{ secrets.NEXT_PUBLIC_PAYMASTER_AND_BUNDLER_ENDPOINT }}" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_CHAIN_NAME=${{ secrets.NEXT_PUBLIC_CHAIN_NAME }}" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_CHAIN_ID=${{ secrets.NEXT_PUBLIC_CHAIN_ID }}" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_CHAIN_URL=${{ secrets.NEXT_PUBLIC_CHAIN_URL }}" >> $GITHUB_ENV
+        
+      - name: Build the React app
+        working-directory: ./frontend  # Ensure the frontend folder is targeted
+        run: npm run build
+        
+      - name: Create .nojekyll file
+        run: touch ./frontend/build/.nojekyll  # Update to the build directory
+        
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@4.1.5
+        with:
+          branch: gh-pages
+          folder: ./frontend/build  # Make sure to use the correct build output folder
+          clean: true
