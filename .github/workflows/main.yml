@@ -53,11 +53,11 @@ jobs:
         run: npm run build
         
       - name: Create .nojekyll file
-        run: touch ./frontend/build/.nojekyll  # Update to the build directory
+        run: touch ./frontend/out/.nojekyll  # Update to the build directory
         
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@4.1.5
         with:
           branch: gh-pages
-          folder: ./frontend/build  # Make sure to use the correct build output folder
+          folder: ./frontend/out  # Make sure to use the correct build output folder
           clean: true
