@@ -1,7 +1,11 @@
 import type { NextConfig } from "next";
 
+const isGitHubPages = process.env.IS_GITHUB_PAGES ?  process.env.IS_GITHUB_PAGES : false;
+
 const nextConfig: NextConfig = {
   output: 'export',
+  basePath: isGitHubPages ? '/reclaim-helloworld' : '',
+  assetPrefix: isGitHubPages ? '/reclaim-helloworld/' : '',
   images: {
     unoptimized: true,
   },
