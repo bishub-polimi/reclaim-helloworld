@@ -6,9 +6,7 @@ import addresses from "../shared/data/addresses.json";
 import NotificationBanner from "./NotificationBanner";
 import { useNotifications, extractMainHash } from "@/hooks/useNotifications"
 
-
 const CONTRACT_ADDRESS = "0x60dF8978e207969654Ea7C07794A444fcc1Cd01F";
-
 
 export default function TestMint() {
     const account = useAccount();
@@ -21,23 +19,24 @@ export default function TestMint() {
 
     const { data: hash, writeContractAsync, isPending, isSuccess: isSent } = useWriteContract();
 
-    useEffect(() => {
-        if (isSent && hash) {
-            console.log("Transaction sent:", hash);
-            addNotification(`Transazione inviata! In attesa di conferma...`, 'success');
-        }
-    }, [isSent, hash]);
-
+    // Aggiungiamo questo hook che mancava
     const { isSuccess: isConfirmed, data: receipt } = useWaitForTransactionReceipt({
         hash,
         enabled: !!hash,
     });
 
     useEffect(() => {
+        if (isSent && hash) {
+            console.log("Transaction sent:", hash);
+            addNotification(`Transazione inviata! In attesa di conferma...`, 'success', hash);
+        }
+    }, [isSent, hash]);
+
+    useEffect(() => {
         if (isConfirmed && receipt) {
             console.log("Transaction confirmed:", receipt);
             setTimeout(() => {
-                addNotification(`Token mintato con successo! TX: ${receipt.transactionHash}`, 'success');
+                addNotification(`Token mintato con successo! TX: `, 'success', receipt.transactionHash);
             }, 1500);
         }
     }, [isConfirmed, receipt]);
@@ -49,7 +48,7 @@ export default function TestMint() {
                 
                 setTimeout(() => {
                     const mainHash = extractMainHash(hash);
-                    addNotification(`Token mintato con successo! User Operation: ${mainHash}`, 'success');
+                    addNotification(`Token mintato con successo! User Operation: `, 'success', mainHash);
                 }, 1500);
             }
         }

@@ -8,16 +8,16 @@ import NotificationBanner from "./NotificationBanner";
 import { useNotifications, extractMainHash } from "@/hooks/useNotifications";
 
 type ClaimSectionProps = {
-    proof: Proof|string|undefined;
+    proof: Proof | string | undefined;
     id: number
 }
 
-const CONTRACT_ADDRESS = "0xFf055825cDaB483114A3cAaA6Fbd1279b18AD304"; 
+const CONTRACT_ADDRESS = "0xFf055825cDaB483114A3cAaA6Fbd1279b18AD304";
 
 export default function ClaimToken(props: ClaimSectionProps) {
     const account = useAccount();
     const { notifications, addNotification, removeNotification } = useNotifications();
-    
+
     const chainId = useChainId();
     const attestorAddress = chainId === 1337
         ? addresses["Attestor#Attestor"] as `0x${string}`
@@ -26,36 +26,36 @@ export default function ClaimToken(props: ClaimSectionProps) {
     // hook per eoa
     const { data: hash, writeContractAsync, isPending, isSuccess: isSent } = useWriteContract();
 
-    useEffect(() => {
-        if (isSent && hash) {
-            console.log("Transaction sent:", hash);
-            addNotification(`Transazione inviata! In attesa di conferma...`, 'success');
-        }
-    }, [isSent, hash]);
-
     const { isSuccess: isConfirmed, data: receipt } = useWaitForTransactionReceipt({
         hash,
         enabled: !!hash
     });
 
+
+    useEffect(() => {
+        if (isSent && hash) {
+            console.log("Transaction sent:", hash);
+            addNotification(`Transazione inviata! In attesa di conferma...`, 'success', hash);
+        }
+    }, [isSent, hash]);
+
     useEffect(() => {
         if (isConfirmed && receipt) {
             console.log("Transaction confirmed:", receipt);
             setTimeout(() => {
-                addNotification(`Token mintato con successo! TX: ${receipt.transactionHash}`, 'success');
+                addNotification(`Token mintato con successo! TX: `, 'success', receipt.transactionHash);
             }, 1500);
         }
     }, [isConfirmed, receipt]);
 
-    // hook per cb smart wallet
     const { writeContracts, isPending: isPendingCB } = useWriteContracts({
         mutation: {
-            onSuccess: (hash) => {
+            onSuccess: (hash: string) => {
                 addNotification(`User Operation inviata! In attesa di conferma...`, 'success');
-                
+
                 setTimeout(() => {
                     const mainHash = extractMainHash(hash);
-                    addNotification(`Token mintato con successo! User Operation: ${mainHash}`, 'success');
+                    addNotification(`Token mintato con successo! User Operation: `, 'success', mainHash);
                 }, 1500);
             }
         }
@@ -106,7 +106,7 @@ export default function ClaimToken(props: ClaimSectionProps) {
                 onClose={removeNotification}
             />
 
-            <button 
+            <button
                 className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full'
                 onClick={getSolidityProof}
                 disabled={isPending || isPendingCB}

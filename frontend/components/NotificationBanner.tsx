@@ -1,11 +1,12 @@
 import React from 'react';
-import { Check, AlertCircle } from 'lucide-react';
+import { Check, AlertCircle, ExternalLink } from 'lucide-react';
 
 export type NotificationData = {
   id: string;
   message: string;
   type: 'success' | 'error';
   isVisible: boolean;
+  txHash?: string;
 };
 
 type NotificationStackProps = {
@@ -16,9 +17,32 @@ type NotificationStackProps = {
 const NotificationBanner = ({ notifications, onClose }: NotificationStackProps) => {
   if (!notifications.length) return null;
 
+  const handleTxClick = (txHash: string) => {
+    window.open(`https://base-sepolia.blockscout.com/tx/${txHash}`, '_blank');
+};
+
+  const formatMessage = (notification: NotificationData) => {
+    if (!notification.txHash) return notification.message;
+
+    const parts = notification.message.split(notification.txHash);
+    return (
+      <>
+        {parts[0]}
+        <button 
+          onClick={() => handleTxClick(notification.txHash!)}
+          className="inline-flex items-center gap-1 underline hover:text-blue-600"
+        >
+          {`${notification.txHash.slice(0, 6)}...${notification.txHash.slice(-4)}`}
+          <ExternalLink className="h-3 w-3" />
+        </button>
+        {parts[1]}
+      </>
+    );
+  };
+
   return (
     <div className="fixed top-20 right-4 left-4 md:left-auto md:w-96 z-50 space-y-4">
-      {notifications.map((notification, index) => (
+      {notifications.map((notification) => (
         <div
           key={notification.id}
           className={`transition-all duration-300 ${
@@ -42,7 +66,7 @@ const NotificationBanner = ({ notifications, onClose }: NotificationStackProps) 
                 <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
               )}
               <p className="text-sm font-medium break-all">
-                {notification.message}
+                {formatMessage(notification)}
               </p>
             </div>
           </div>

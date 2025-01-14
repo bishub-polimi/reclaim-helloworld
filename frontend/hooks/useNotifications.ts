@@ -5,6 +5,7 @@ export type NotificationData = {
   message: string;
   type: 'success' | 'error';
   isVisible: boolean;
+  txHash?: string;
 };
 
 const generateId = () => Math.random().toString(36).substr(2, 9);
@@ -16,13 +17,14 @@ export const extractMainHash = (hash: string) => {
 export function useNotifications() {
   const [notifications, setNotifications] = useState<NotificationData[]>([]);
 
-  const addNotification = (message: string, type: 'success' | 'error') => {
+  const addNotification = (message: string, type: 'success' | 'error', txHash?: string) => {
     const id = generateId();
     setNotifications(prev => [...prev, {
       id,
       message,
       type,
-      isVisible: true
+      isVisible: true,
+      txHash
     }]);
 
     setTimeout(() => {
