@@ -36,6 +36,7 @@ jobs:
           NEXT_PUBLIC_CHAIN_NAME: ${{ secrets.NEXT_PUBLIC_CHAIN_NAME }}
           NEXT_PUBLIC_CHAIN_ID: ${{ secrets.NEXT_PUBLIC_CHAIN_ID }}
           NEXT_PUBLIC_CHAIN_URL: ${{ secrets.NEXT_PUBLIC_CHAIN_URL }}
+          IS_GITHUB_PAGES: ${{ secrets.IS_GITHUB_PAGES }}
         run: |
           echo "NEXT_PUBLIC_APP_ID=${{ secrets.NEXT_PUBLIC_APP_ID }}" >> $GITHUB_ENV
           echo "NEXT_PUBLIC_APP_SECRET=${{ secrets.NEXT_PUBLIC_APP_SECRET }}" >> $GITHUB_ENV
@@ -47,13 +48,14 @@ jobs:
           echo "NEXT_PUBLIC_CHAIN_NAME=${{ secrets.NEXT_PUBLIC_CHAIN_NAME }}" >> $GITHUB_ENV
           echo "NEXT_PUBLIC_CHAIN_ID=${{ secrets.NEXT_PUBLIC_CHAIN_ID }}" >> $GITHUB_ENV
           echo "NEXT_PUBLIC_CHAIN_URL=${{ secrets.NEXT_PUBLIC_CHAIN_URL }}" >> $GITHUB_ENV
+          echo "IS_GITHUB_PAGES=${{ secrets.IS_GITHUB_PAGES }}" >> $GITHUB_ENV
         
       - name: Build the React app
         working-directory: ./frontend  # Ensure the frontend folder is targeted
         run: npm run build
         
       - name: Create .nojekyll file
-        run: touch out/.nojekyll  # Update to the build directory
+        run: touch ./frontend/out/.nojekyll  # Update to the build directory
         
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@4.1.5
