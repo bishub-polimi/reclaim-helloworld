@@ -7,7 +7,6 @@ export default function App() {
   return (
     <>
       <Header backButton={false} gameButton={true} />
-      {/* <ReclaimSection /> */}
       <Home />
     </>
   )

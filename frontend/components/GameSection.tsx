@@ -9,7 +9,7 @@ import { usePhaserGame } from "@/hooks/usePhaserGame"
 import { useEffect } from "react"
 import { useAccount, useReadContract } from "wagmi"
 import artifacts from "../abi/Attestor.json";
-import addresses from "../shared/data/addresses.json";
+
 
 const config = {
     // For more settings see <https://github.com/photonstorm/phaser/blob/master/src/boot/Config.js>
@@ -48,23 +48,25 @@ const config = {
 export default function GameSection() {
 
     const account = useAccount();
+
+    const attestorAddress = process.env.NEXT_PUBLIC_TOKEN_CONTRACT_ADDRESS;
     
     const { data: b1 } = useReadContract({
-        address: addresses["Attestor"] as `0x${string}`,
+        address: attestorAddress,
         abi: artifacts.abi,
         functionName: 'balanceOf',
         args: [account.address,0],
       })
   
       const { data: b2 } = useReadContract({
-          address: addresses["Attestor"] as `0x${string}`,
+          address: attestorAddress,
           abi: artifacts.abi,
           functionName: 'balanceOf',
           args: [account.address,1],
       })
   
       const { data: b3 } = useReadContract({
-        address: addresses["Attestor"] as `0x${string}`,
+        address: attestorAddress,
         abi: artifacts.abi,
         functionName: 'balanceOf',
         args: [account.address,2],

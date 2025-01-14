@@ -8,8 +8,8 @@ import ReclaimProvider from "./ReclaimProvider";
 import ReclaimQR from "./ReclaimQR";
 import ClaimToken from "./ClaimToken";
 import { useAccount, useReadContract } from "wagmi";
-import addresses from "../shared/data/addresses.json";
 import artifacts from "../abi/Attestor.json";
+
 
 export default function UserProfile() {
 
@@ -23,22 +23,24 @@ export default function UserProfile() {
 
     const account = useAccount();
 
+    const attestorAddress = process.env.NEXT_PUBLIC_TOKEN_CONTRACT_ADDRESS;
+
     const { data: b1 } = useReadContract({
-      address: addresses["Attestor"] as `0x${string}`,
+      address: attestorAddress,
       abi: artifacts.abi,
       functionName: 'balanceOf',
       args: [account.address,0],
     })
 
     const { data: b2 } = useReadContract({
-        address: addresses["Attestor"] as `0x${string}`,
+        address: attestorAddress,
         abi: artifacts.abi,
         functionName: 'balanceOf',
         args: [account.address,1],
     })
 
     const { data: b3 } = useReadContract({
-      address: addresses["Attestor"] as `0x${string}`,
+      address: attestorAddress,
       abi: artifacts.abi,
       functionName: 'balanceOf',
       args: [account.address,2],
