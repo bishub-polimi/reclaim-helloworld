@@ -26,7 +26,7 @@ const connectors = connectorsForWallets(
 
 ////
 
-export const custom = defineChain({
+/* export const custom = defineChain({
   id: parseInt(process.env.NEXT_PUBLIC_CHAIN_ID!),
   name: process.env.NEXT_PUBLIC_CHAIN_NAME!,
   nativeCurrency: {
@@ -37,11 +37,11 @@ export const custom = defineChain({
   rpcUrls: {
     default: { http: [process.env.NEXT_PUBLIC_CHAIN_URL!] },
   },
-})
+}) */
 
 export const config = getDefaultConfig({
   appName: 'Demo Web3Hub',
   projectId: projectId,
-  chains: [baseSepolia, base, custom],
+  chains: [baseSepolia], //, base, custom],
   connectors, 
 });
