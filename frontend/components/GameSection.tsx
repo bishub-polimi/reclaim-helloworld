@@ -7,12 +7,8 @@ import BlankScene from "../game/scene/BlankScene"
 import Phaser from "phaser";
 import { usePhaserGame } from "@/hooks/usePhaserGame"
 import { useEffect } from "react"
-import { useAccount, useReadContract, useChainId } from "wagmi"
+import { useAccount, useReadContract } from "wagmi"
 import artifacts from "../abi/Attestor.json";
-import addresses from "../shared/data/addresses.json";
-
-const CONTRACT_ADDRESS = "0xFf055825cDaB483114A3cAaA6Fbd1279b18AD304"; 
-
 
 
 const config = {
@@ -53,10 +49,7 @@ export default function GameSection() {
 
     const account = useAccount();
 
-    const chainId = useChainId();
-    const attestorAddress = chainId === 1337 
-            ? addresses["Attestor#Attestor"] as `0x${string}`
-            : CONTRACT_ADDRESS as `0x${string}`;
+    const attestorAddress = process.env.NEXT_PUBLIC_TOKEN_CONTRACT_ADDRESS;
     
     const { data: b1 } = useReadContract({
         address: attestorAddress,

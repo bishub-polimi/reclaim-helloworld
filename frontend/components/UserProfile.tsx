@@ -7,11 +7,9 @@ import { AiOutlineCheck, AiOutlineCloseCircle } from "react-icons/ai";
 import ReclaimProvider from "./ReclaimProvider";
 import ReclaimQR from "./ReclaimQR";
 import ClaimToken from "./ClaimToken";
-import { useAccount, useReadContract, useChainId } from "wagmi";
-import addresses from "../shared/data/addresses.json";
+import { useAccount, useReadContract } from "wagmi";
 import artifacts from "../abi/Attestor.json";
 
-const CONTRACT_ADDRESS = "0xFf055825cDaB483114A3cAaA6Fbd1279b18AD304"; 
 
 export default function UserProfile() {
 
@@ -25,10 +23,7 @@ export default function UserProfile() {
 
     const account = useAccount();
 
-    const chainId = useChainId();
-    const attestorAddress = chainId === 1337 
-            ? addresses["Attestor#Attestor"] as `0x${string}`
-            : CONTRACT_ADDRESS as `0x${string}`;
+    const attestorAddress = process.env.NEXT_PUBLIC_TOKEN_CONTRACT_ADDRESS;
 
     const { data: b1 } = useReadContract({
       address: attestorAddress,

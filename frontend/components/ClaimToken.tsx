@@ -1,9 +1,8 @@
 import { Proof, transformForOnchain } from "@reclaimprotocol/js-sdk";
-import { useAccount, useWaitForTransactionReceipt, useWriteContract, useChainId } from "wagmi";
+import { useAccount, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { useWriteContracts } from "wagmi/experimental";
 import { useEffect } from "react";
 import artifacts from "../abi/Attestor.json";
-import addresses from "../shared/data/addresses.json";
 import NotificationBanner from "./NotificationBanner";
 import { useNotifications, extractMainHash } from "@/hooks/useNotifications";
 
@@ -12,16 +11,11 @@ type ClaimSectionProps = {
     id: number
 }
 
-const CONTRACT_ADDRESS = "0xFf055825cDaB483114A3cAaA6Fbd1279b18AD304";
-
 export default function ClaimToken(props: ClaimSectionProps) {
     const account = useAccount();
     const { notifications, addNotification, removeNotification } = useNotifications();
 
-    const chainId = useChainId();
-    const attestorAddress = chainId === 1337
-        ? addresses["Attestor#Attestor"] as `0x${string}`
-        : CONTRACT_ADDRESS as `0x${string}`;
+    const attestorAddress = process.env.NEXT_PUBLIC_TOKEN_CONTRACT_ADDRESS;
 
     // hook per eoa
     const { data: hash, writeContractAsync, isPending, isSuccess: isSent } = useWriteContract();
@@ -100,7 +94,7 @@ export default function ClaimToken(props: ClaimSectionProps) {
     };
 
     return (
-        <div className="flex flex-col items-center mt-6">
+        <div className="flex flex-col items-center">
             <NotificationBanner
                 notifications={notifications}
                 onClose={removeNotification}
@@ -111,7 +105,7 @@ export default function ClaimToken(props: ClaimSectionProps) {
                 onClick={getSolidityProof}
                 disabled={isPending || isPendingCB}
             >
-                {isPending || isPendingCB ? 'minting...' : 'Claim'}
+                {isPending || isPendingCB ? 'Minting...' : 'Claim'}
             </button>
         </div>
     );

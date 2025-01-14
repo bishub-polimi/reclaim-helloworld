@@ -18,7 +18,7 @@ const NotificationBanner = ({ notifications, onClose }: NotificationStackProps) 
   if (!notifications.length) return null;
 
   const handleTxClick = (txHash: string) => {
-    window.open(`https://base-sepolia.blockscout.com/tx/${txHash}`, '_blank');
+    window.open(`https://base-sepolia.blockscout.com/op/${txHash}`, '_blank');
 };
 
   const formatMessage = (notification: NotificationData) => {
