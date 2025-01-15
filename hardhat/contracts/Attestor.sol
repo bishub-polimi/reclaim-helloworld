@@ -5,12 +5,13 @@ import "./Reclaim.sol";
 import "./Claims.sol";
 import {ERC1155} from "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
  
 contract Attestor is ERC1155, Ownable {
 
+   string public name = "Web3Hub Proofs"; 
    address reclaimAddress;
    string public _baseURI;
-   mapping(uint256=>string) public _URIs;
  
    constructor(address _reclaimAddress) ERC1155("") Ownable() {
       reclaimAddress = _reclaimAddress;
@@ -23,11 +24,7 @@ contract Attestor is ERC1155, Ownable {
    }
 
    function uri(uint256 tokenId) public view virtual override returns (string memory) {
-        return string(abi.encodePacked(_baseURI, _URIs[tokenId]));
-   }
-
-   function setTokenURI(uint256 tokenId, string memory newuri) public onlyOwner {
-        _URIs[tokenId] = newuri;
+        return string(abi.encodePacked(_baseURI,'/', Strings.toString(tokenId),'.json'));
    }
 
    function setBaseURI(string memory newuri) public onlyOwner {
