@@ -1,13 +1,7 @@
 import React from 'react';
 import { Check, AlertCircle, ExternalLink } from 'lucide-react';
+import { NotificationData } from '../hooks/useNotifications';
 
-export type NotificationData = {
-  id: string;
-  message: string;
-  type: 'success' | 'error';
-  isVisible: boolean;
-  txHash?: string;
-};
 
 type NotificationStackProps = {
   notifications: NotificationData[];
@@ -17,19 +11,21 @@ type NotificationStackProps = {
 const NotificationBanner = ({ notifications, onClose }: NotificationStackProps) => {
   if (!notifications.length) return null;
 
-  const handleTxClick = (txHash: string) => {
-    window.open(`https://base-sepolia.blockscout.com/op/${txHash}`, '_blank');
-};
+  const handleTxClick = (txHash: string, walletType?: string) => {
+    const baseUrl = 'https://base-sepolia.blockscout.com';
+    const path = walletType === 'coinbaseWallet' ? 'op' : 'tx';
+    window.open(`${baseUrl}/${path}/${txHash}`, '_blank');
+  };
 
   const formatMessage = (notification: NotificationData) => {
-    if (!notification.txHash) return notification.message;
+    if (!notification.txHash) return notification.message.slice(0, 80) + '...';
 
     const parts = notification.message.split(notification.txHash);
     return (
       <>
         {parts[0]}
         <button 
-          onClick={() => handleTxClick(notification.txHash!)}
+          onClick={() => handleTxClick(notification.txHash!, notification.walletType)}
           className="inline-flex items-center gap-1 underline hover:text-blue-600"
         >
           {`${notification.txHash.slice(0, 6)}...${notification.txHash.slice(-4)}`}
@@ -52,9 +48,9 @@ const NotificationBanner = ({ notifications, onClose }: NotificationStackProps) 
           <div
             className={`
               rounded-lg border p-4 shadow-lg
-              ${notification.type === 'success'
-                ? 'bg-green-50 border-green-200 text-green-800'
-                : 'bg-red-50 border-red-200 text-red-800'
+              ${notification.type === 'success' 
+                ? 'bg-[rgba(0,128,0,0.2)] border-green text-green' 
+                : 'bg-[rgba(220,38,38,0.2)] border-red text-red'}
               }
             `}
             role="alert"

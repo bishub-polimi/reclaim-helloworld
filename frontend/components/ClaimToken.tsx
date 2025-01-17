@@ -18,18 +18,34 @@ export default function ClaimToken(props: ClaimSectionProps) {
     const attestorAddress = process.env.NEXT_PUBLIC_TOKEN_CONTRACT_ADDRESS;
 
     // hook per eoa
-    const { data: hash, writeContractAsync, isPending, isSuccess: isSent } = useWriteContract();
+    const { data: hash, writeContractAsync, isPending, isSuccess: isSent, error } = useWriteContract({
+        onError: (error) => {
+            console.error("[ClaimToken] Transaction Error:", error);
+            const errorMessage = `Errore durante il mint: ${error.message.split('\n')[0]}`;
+            addNotification(errorMessage, 'error');
+        }
+    });
 
-    const { isSuccess: isConfirmed, data: receipt } = useWaitForTransactionReceipt({
+    const { isSuccess: isConfirmed, data: receipt, error: receiptError } = useWaitForTransactionReceipt({
         hash,
         enabled: !!hash
     });
+
+    useEffect(() => {
+        if (receiptError) {
+            console.error("[ClaimToken] Transaction failed:", receiptError);
+            const errorMessage = receiptError.message.includes("execution reverted")
+            ? `Errore: Transazione fallita (execution reverted) - ${receiptError.message}`
+            : `Errore durante il mint: ${receiptError.message}`;
+            addNotification(errorMessage, 'error');
+        }
+    }, [receiptError]);
 
 
     useEffect(() => {
         if (isSent && hash) {
             console.log("Transaction sent:", hash);
-            addNotification(`Transazione inviata! In attesa di conferma...`, 'success', hash);
+            addNotification(`Transazione inviata! In attesa di conferma...`, 'success', hash, account.connector?.type);
         }
     }, [isSent, hash]);
 
@@ -37,7 +53,7 @@ export default function ClaimToken(props: ClaimSectionProps) {
         if (isConfirmed && receipt) {
             console.log("Transaction confirmed:", receipt);
             setTimeout(() => {
-                addNotification(`Token mintato con successo! TX: `, 'success', receipt.transactionHash);
+                addNotification(`Token mintato con successo! TX: `, 'success', receipt.transactionHash, account.connector?.type);
             }, 1500);
         }
     }, [isConfirmed, receipt]);
@@ -45,12 +61,13 @@ export default function ClaimToken(props: ClaimSectionProps) {
     const { writeContracts, isPending: isPendingCB } = useWriteContracts({
         mutation: {
             onSuccess: (hash: string) => {
-                addNotification(`User Operation inviata! In attesa di conferma...`, 'success');
-
-                setTimeout(() => {
-                    const mainHash = extractMainHash(hash);
-                    addNotification(`Token mintato con successo! User Operation: `, 'success', mainHash);
-                }, 1500);
+                const mainHash = extractMainHash(hash);
+                addNotification(`User Operation inviata! In attesa di conferma...`, 'success', mainHash);
+            },
+            onError: (error: Error) => {
+                console.error("[ClaimToken] UserOperation Error:", error);
+                const errorMessage = `Errore durante il mint: ${error.message.split('\n')[0]}`;
+                addNotification(errorMessage, 'error');
             }
         }
     });
@@ -89,7 +106,8 @@ export default function ClaimToken(props: ClaimSectionProps) {
             }
         } catch (error: any) {
             console.error("[ClaimToken] Error:", error);
-            addNotification("Errore durante il mint: " + error.message, 'error');
+            const errorMessage = `Errore durante il mint: ${error.message.split('\n')[0]}`;
+            addNotification(errorMessage, 'error');
         }
     };
 
