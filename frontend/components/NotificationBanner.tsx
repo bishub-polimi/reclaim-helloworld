@@ -52,9 +52,9 @@ const NotificationBanner = ({ notifications, onClose }: NotificationStackProps) 
           <div
             className={`
               rounded-lg border p-4 shadow-lg
-              ${notification.type === 'success'
-                ? 'bg-green-50 border-green-200 text-green-800'
-                : 'bg-red-50 border-red-200 text-red-800'
+              ${notification.type === 'success' 
+                ? 'bg-[rgba(0,128,0,0.2)] border-green text-green' 
+                : 'bg-[rgba(220,38,38,0.2)] border-red text-red'}
               }
             `}
             role="alert"
