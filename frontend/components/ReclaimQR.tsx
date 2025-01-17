@@ -6,7 +6,7 @@ type ReclaimQRProps = {
 
 export default function ProofSection(props: ReclaimQRProps) {
     return (
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center w-full max-w-md">
         {
           props.requestUrl ? 
             <>
@@ -14,7 +14,7 @@ export default function ProofSection(props: ReclaimQRProps) {
                 href={props.requestUrl} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="mb-4 px-4 py-2 border-2 border-gray-400 text-gray-600 hover:border-gray-600 
+                className="mb-4 mx-4 px-4 py-2 border-2 border-gray-400 text-gray-600 hover:border-gray-600 
                          hover:text-gray-800 rounded-lg transition-colors duration-200 text-sm flex items-center justify-between w-auto"
               >
                 <span>Se sei da mobile, apri il link</span>
