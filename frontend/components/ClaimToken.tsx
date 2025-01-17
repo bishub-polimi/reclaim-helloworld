@@ -41,11 +41,11 @@ export default function ClaimToken(props: ClaimSectionProps) {
         }
     }, [receiptError]);
 
-
+    
     useEffect(() => {
         if (isSent && hash) {
             console.log("Transaction sent:", hash);
-            addNotification(`Transazione inviata! In attesa di conferma...`, 'success', hash, account.connector?.type);
+            addNotification(`Transazione inviata! In attesa di conferma...`, 'success', hash);
         }
     }, [isSent, hash]);
 
@@ -53,7 +53,7 @@ export default function ClaimToken(props: ClaimSectionProps) {
         if (isConfirmed && receipt) {
             console.log("Transaction confirmed:", receipt);
             setTimeout(() => {
-                addNotification(`Token mintato con successo! TX: `, 'success', receipt.transactionHash, account.connector?.type);
+                addNotification(`Token mintato con successo! TX: `, 'success', receipt.transactionHash);
             }, 1500);
         }
     }, [isConfirmed, receipt]);

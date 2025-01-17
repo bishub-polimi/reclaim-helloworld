@@ -11,11 +11,12 @@ type NotificationStackProps = {
 const NotificationBanner = ({ notifications, onClose }: NotificationStackProps) => {
   if (!notifications.length) return null;
 
-  const handleTxClick = (txHash: string, walletType?: string) => {
+  const handleTxClick = (txHash: string) => {
     const baseUrl = 'https://base-sepolia.blockscout.com';
-    const path = walletType === 'coinbaseWallet' ? 'op' : 'tx';
+    const path = txHash.length === 66 ? 'op' : 'tx';
     window.open(`${baseUrl}/${path}/${txHash}`, '_blank');
   };
+
 
   const formatMessage = (notification: NotificationData) => {
     if (!notification.txHash) return notification.message.slice(0, 80) + '...';
@@ -25,7 +26,7 @@ const NotificationBanner = ({ notifications, onClose }: NotificationStackProps) 
       <>
         {parts[0]}
         <button 
-          onClick={() => handleTxClick(notification.txHash!, notification.walletType)}
+          onClick={() => handleTxClick(notification.txHash!)}
           className="inline-flex items-center gap-1 underline hover:text-blue-600"
         >
           {`${notification.txHash.slice(0, 6)}...${notification.txHash.slice(-4)}`}
