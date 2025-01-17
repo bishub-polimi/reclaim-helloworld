@@ -6,7 +6,6 @@ export type NotificationData = {
   type: 'success' | 'error';
   isVisible: boolean;
   txHash?: string;
-  walletType?: string;
 };
 
 const generateId = () => Math.random().toString(36).substr(2, 9);
@@ -18,15 +17,14 @@ export const extractMainHash = (hash: string) => {
 export function useNotifications() {
   const [notifications, setNotifications] = useState<NotificationData[]>([]);
 
-  const addNotification = (message: string, type: 'success' | 'error', txHash?: string, walletType?: string) => {
+  const addNotification = (message: string, type: 'success' | 'error', txHash?: string) => {
     const id = generateId();
     setNotifications(prev => [...prev, {
       id,
       message,
       type,
       isVisible: true,
-      txHash,
-      walletType
+      txHash
     }]);
 
     setTimeout(() => {
