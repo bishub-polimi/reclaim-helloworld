@@ -13,7 +13,7 @@ export default function Home() {
             account.status == 'connected' ?
                 <UserProfile />
                 :
-                <div className="flex justify-center items-center h-full w-full">Please connect your wallet</div>
+                <div className="flex justify-center items-center h-full w-full">Per favore connetti il tuo wallet</div>
         }
       </>
     );

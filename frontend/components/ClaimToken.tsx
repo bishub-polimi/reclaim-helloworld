@@ -105,7 +105,7 @@ export default function ClaimToken(props: ClaimSectionProps) {
                 onClick={getSolidityProof}
                 disabled={isPending || isPendingCB}
             >
-                {isPending || isPendingCB ? 'Minting...' : 'Claim'}
+                {isPending || isPendingCB ? 'Minting...' : 'Ottieni il Token'}
             </button>
         </div>
     );

@@ -58,11 +58,11 @@ export default function UserProfile() {
         <ReclaimQR requestUrl={requestUrl} />
         <div className="flex flex-row items-center justify-center gap-x-12">
           <div className='flex flex-col gap-y-4 h-full'>
-            <h2 className="text-center font-bold">License Points</h2>
+            <h2 className="text-center font-bold">Punti Patente</h2>
               {
                 b1 && b1 > BigInt(0)?
                   <>
-                    <div className="text-center">Claimed <AiOutlineCheck className="inline text-green"/></div>
+                    <div className="text-center">Ottenuto <AiOutlineCheck className="inline text-green"/></div>
                   </>
                   :
                   proofOne ?
@@ -72,12 +72,12 @@ export default function UserProfile() {
                           ()=>{
                           setModalProof(proofOne);
                           return setIsOpen(true)}
-                      }>View Proof</button>
+                      }>Visualizza la Prova</button>
                       <ClaimToken proof={proofOne} id={0}/>
                     </>
                     :
                     <>
-                      <div>Not generated <AiOutlineCloseCircle className="inline text-red"/></div>
+                      <div className="text-center">Prova mancante <AiOutlineCloseCircle className="inline text-red"/></div>
                       <ReclaimProvider setProof={setProofOne} setRequestUrl={setRequestUrl} providerID={FIRST_PROVIDER_ID} />
                     </>
               }
@@ -85,11 +85,11 @@ export default function UserProfile() {
             </div>
         
             <div className='flex flex-col gap-y-4 h-full'>
-              <h2 className="text-center font-bold">Donation</h2>
+              <h2 className="text-center font-bold">Donazione</h2>
               {
                 b2 && b2 > BigInt(0) ?
                   <>
-                    <div className="text-center">Claimed <AiOutlineCheck className="inline text-green"/></div>
+                    <div className="text-center">Ottenuto <AiOutlineCheck className="inline text-green"/></div>
                   </>
                   :
                   proofTwo ?
@@ -99,12 +99,12 @@ export default function UserProfile() {
                           ()=>{
                             setModalProof(proofTwo);
                             return setIsOpen(true)}
-                        }>View Proof</button>
+                        }>Visualizza la Prova</button>
                         <ClaimToken proof={proofTwo} id={1}/>
                     </>
                     :
                     <>
-                      <div>Not generated <AiOutlineCloseCircle className="inline text-red"/></div>
+                      <div className="text-center">Prova mancante <AiOutlineCloseCircle className="inline text-red"/></div>
                       <ReclaimProvider setProof={setProofTwo} setRequestUrl={setRequestUrl} providerID={SECOND_PROVIDER_ID} />
                     </>
               }
@@ -115,7 +115,7 @@ export default function UserProfile() {
               {
                 b3 && b3 > BigInt(0) ?
                   <>
-                   <div className="text-center">Claimed <AiOutlineCheck className="inline text-green"/></div>
+                   <div className="text-center">Ottenuto <AiOutlineCheck className="inline text-green"/></div>
                   </>
                   :
                   proofThree ?
@@ -125,12 +125,12 @@ export default function UserProfile() {
                           ()=>{
                             setModalProof(proofThree);
                             return setIsOpen(true)}
-                        }>View Proof</button>
+                        }>Visualizza la Prova</button>
                         <ClaimToken proof={proofThree} id={2}/>
                     </>
                     :
                     <>
-                      <div>Not generated <AiOutlineCloseCircle className="inline text-red"/></div>
+                      <div className="text-center">Prova mancante <AiOutlineCloseCircle className="inline text-red"/></div>
                       <ReclaimProvider setProof={setProofThree} setRequestUrl={setRequestUrl} providerID={THIRD_PROVIDER_ID} />
                     </>
               }
