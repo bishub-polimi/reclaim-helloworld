@@ -16,6 +16,16 @@ export default {
         black: "#000000",
         green: "#008000"
       },
+      keyframes: {
+        shine: {
+          '0%': { opacity: '1', transform: 'scale(1)' },
+          '50%': { opacity: '0.3', transform: 'scale(1.05)' },
+          '100%': { opacity: '1', transform: 'scale(1)' }
+        }
+      },
+      animation: {
+        'shine-once': 'shine 1s ease-in-out'
+      }
     },
   },
   plugins: [],

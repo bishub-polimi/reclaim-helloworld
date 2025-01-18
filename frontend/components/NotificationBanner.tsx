@@ -1,13 +1,7 @@
 import React from 'react';
 import { Check, AlertCircle, ExternalLink } from 'lucide-react';
+import { NotificationData, extractMainHash } from "@/hooks/useNotifications";
 
-export type NotificationData = {
-  id: string;
-  message: string;
-  type: 'success' | 'error';
-  isVisible: boolean;
-  txHash?: string;
-};
 
 type NotificationStackProps = {
   notifications: NotificationData[];
@@ -18,11 +12,15 @@ const NotificationBanner = ({ notifications, onClose }: NotificationStackProps) 
   if (!notifications.length) return null;
 
   const handleTxClick = (txHash: string) => {
-    window.open(`https://base-sepolia.blockscout.com/op/${txHash}`, '_blank');
-};
+    const baseUrl = 'https://base-sepolia.blockscout.com';
+    const path = txHash.length > 66 ? 'op' : 'tx';
+    const hash = txHash.length > 66 ? extractMainHash(txHash) : txHash;
+    window.open(`${baseUrl}/${path}/${hash}`, '_blank');
+  };
+
 
   const formatMessage = (notification: NotificationData) => {
-    if (!notification.txHash) return notification.message;
+    if (!notification.txHash) return notification.message.slice(0, 120);
 
     const parts = notification.message.split(notification.txHash);
     return (
@@ -53,8 +51,8 @@ const NotificationBanner = ({ notifications, onClose }: NotificationStackProps) 
             className={`
               rounded-lg border p-4 shadow-lg
               ${notification.type === 'success' 
-                ? 'bg-[rgba(0,128,0,0.2)] border-green text-green' 
-                : 'bg-[rgba(220,38,38,0.2)] border-red text-red'}
+                ? 'bg-[rgba(160,246,160,0.95)] border-green text-green' 
+                : 'bg-[rgba(243,173,173,0.95)] border-red text-red'}
               }
             `}
             role="alert"
@@ -65,7 +63,7 @@ const NotificationBanner = ({ notifications, onClose }: NotificationStackProps) 
               ) : (
                 <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
               )}
-              <p className="text-sm font-medium break-all">
+              <p className="text-base font-bold break-all">
                 {formatMessage(notification)}
               </p>
             </div>
