@@ -29,7 +29,7 @@ export function useNotifications() {
 
     setTimeout(() => {
       removeNotification(id);
-    }, 6000);
+    }, 8000);
   };
 
   const removeNotification = (id: string) => {

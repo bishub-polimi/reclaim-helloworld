@@ -43,6 +43,8 @@ contract Attestor is ERC1155, Ownable {
           uint256 points = stringToUint(pointsString);
           if(points > 29){
                _mint(account, 0, 1, data);
+          } else {
+            revert("Punti della patente insufficienti: richiesti almeno 30pt");
           }
         } else {
           //check donations
@@ -52,15 +54,19 @@ contract Attestor is ERC1155, Ownable {
             uint256 donations = stringToUint(donationsString);
             if(donations > 0){
                 _mint(account, 1, 1, data);
+            } else {
+                revert("Donazione assente: richiesta almeno 1 donazione");
             }
           } else {
-
+            //check survey
             string memory footprintString = Claims.extractFieldFromContext(proof.claimInfo.context,'"annualFootprint":"');
 
             if(bytes(footprintString).length > 0){
                 uint256 footprint = stringToUint(footprintString);
-                if(footprint < 10){
+                if(footprint < 20){
                     _mint(account, 2, 1, data);
+                } else {
+                    revert("Punteggio insufficiente: richiesto almeno 20");
                 }
             }
           }

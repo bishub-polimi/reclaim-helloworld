@@ -1,6 +1,7 @@
 import { Proof, transformForOnchain } from "@reclaimprotocol/js-sdk";
-import { useAccount, useWriteContract, useReadContract } from "wagmi";
+import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { useWriteContracts } from "wagmi/experimental";
+import {useEffect} from "react";
 import artifacts from "../abi/Attestor.json";
 import NotificationBanner from "./NotificationBanner";
 import { useNotifications } from "@/hooks/useNotifications";
@@ -15,45 +16,27 @@ export default function ClaimToken(props: ClaimSectionProps) {
     const { notifications, addNotification, removeNotification } = useNotifications();
     const attestorAddress = process.env.NEXT_PUBLIC_TOKEN_CONTRACT_ADDRESS;
 
-    const { data: tokenBalance, refetch: refetchBalance } = useReadContract({
-        address: attestorAddress,
-        abi: artifacts.abi,
-        functionName: 'balanceOf',
-        args: [account.address, props.id],
-        query: {
-            enabled: false,
+    const getRevertMessage = (error: Error) => {
+        const match = error.message.match(/execution reverted: (.*?)(?:\.|\n|$)/);
+        if (match?.[1]) {
+            return match[1];
         }
-    });
-
-    const checkTokenBalance = async (maxAttempts = 5) => {
-        addNotification('In attesa del token...', 'success');
-        let attempts = 0;
-        const checkBalance = async () => {
-            const { data: balance } = await refetchBalance();
-            console.log("Current token balance:", balance);
-            if (balance > 0) {
-                return true;
-            }
-            attempts++;
-            if (attempts >= maxAttempts) {
-                addNotification('Minting del token fallito', 'error');
-                return false;
-            }
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            return checkBalance();
-        };
-        return checkBalance();
+        return error.message;
     };
 
-
     // hook per eoa
-    const { data: hash, writeContractAsync, isPending, isSuccess: isSent } = useWriteContract({
-        onError: (error: { message: string; }) => {
-            console.error("[ClaimToken] Transaction Error:", error);
-            const errorMessage = `Errore durante la transazione: ${error.message.split('\n')[0]}`;
-            addNotification(errorMessage, 'error');
-        }
+    const { data: hash, writeContractAsync, isPending, isSuccess: isSent, error } = useWriteContract();
+    const { isSuccess: isConfirmed, data: receipt, error: waitError, isError } = useWaitForTransactionReceipt({
+        hash,
+        enabled: !!hash
     });
+
+    useEffect(() => {
+        if (isError && waitError && hash) { 
+            console.log('Transaction reverted:', waitError);
+            addNotification(`${getRevertMessage(waitError)}`, 'error');
+        }
+    }, [isError, waitError, hash]);
 
 
     // hook per cb wallet
@@ -99,9 +82,9 @@ export default function ClaimToken(props: ClaimSectionProps) {
                     console.log("UserOperation result:", result);
                 }, 1500);
 
-                setTimeout(async () => {
-                    await checkTokenBalance();
-                }, 3000);
+                setTimeout(() => {
+                    addNotification(`In attesa del minting...`, 'success');
+                }, 1500);
 
             } else {
                 const result = await writeContractAsync({
@@ -113,12 +96,13 @@ export default function ClaimToken(props: ClaimSectionProps) {
 
                 setTimeout(() => {
                     addNotification(`Transazione inviata: `, 'success', result);
+                    addNotification(`In attesa del minting...`, 'success');
                     console.log("Transaction result:", result);
                 }, 1500);
 
-                setTimeout(async () => {
-                    await checkTokenBalance();
-                }, 3000);
+                setTimeout(() => {
+                    addNotification(`In attesa del minting...`, 'success');
+                }, 1500);
 
             }
         } catch (error: any) {
