@@ -101,6 +101,20 @@ export default function UserProfile() {
       <ReclaimQR requestUrl={requestUrl} />
 
       <div className="flex flex-col md:flex-row items-center justify-center gap-x-12 max-sm:w-full">
+
+        <div className='flex flex-col gap-y-4 h-full py-4'>
+          <h2 className="text-center font-bold">Alpha Tester</h2>
+          {
+            b4 && b4 > BigInt(0) ?
+            <div className="text-center animate-shine-once">Badge ottenuto <AiOutlineCheck className="inline text-green" /></div>
+            :
+            <div className="flex flex-col gap-4">
+              <div className="text-center">Badge non riscattato <AiOutlineCloseCircle className="inline text-red" /></div>
+              <ClaimBadge />
+            </div>
+          }
+        </div>
+
         <div className='flex flex-col gap-y-4 h-full py-4 max-sm:w-full max-sm:border-b-2 max-sm:border-grey'>
           <h2 className="text-center font-bold">Punti Patente</h2>
           {renderStatus(proofOne, b1, 0)}
@@ -116,18 +130,6 @@ export default function UserProfile() {
           {renderStatus(proofThree, b3, 2)}
         </div>
 
-        <div className='flex flex-col gap-y-4 h-full py-4'>
-          <h2 className="text-center font-bold">Alpha Badge</h2>
-          {
-            b4 && b4 > BigInt(0) ?
-            <div className="text-center animate-shine-once">Badge ottenuto <AiOutlineCheck className="inline text-green" /></div>
-            :
-            <div className="flex flex-col gap-4">
-              <div className="text-center">Badge non riscattato <AiOutlineCloseCircle className="inline text-red" /></div>
-              <ClaimBadge />
-            </div>
-          }
-        </div>
       </div>  
 
       {isOpen && <ProofSection setIsOpen={setIsOpen} proof={modalProof} />}
