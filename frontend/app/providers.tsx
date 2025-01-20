@@ -12,8 +12,8 @@ const CustomWalletInfo = ({ Text }) => (
     <div className="p-2 text-black">
       <h2 className="text-lg font-semibold">Guida all'uso</h2>
       <ul className="space-y-2">
-        <li>• Scegli Coinbase Wallet se sei nuovo/a (usa gli smart account per non pagare le fees!)</li>
-        <li>• Scegli MetaMask o WalletConnect se hai già un tuo wallet installato dove ricevere i tokens</li>
+        <li>• Scegli <strong>Coinbase Wallet</strong> se sei nuovo/a (usa gli smart account per non pagare le fees!)</li>
+        <li>• Scegli <strong>MetaMask</strong> o <strong>WalletConnect</strong> se hai già un tuo wallet installato dove ricevere i tokens</li>
       </ul>
     </div>
   </Text>
