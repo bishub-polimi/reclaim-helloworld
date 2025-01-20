@@ -7,7 +7,7 @@ export default buildModule("AttestorV2", (m) => {
   const attestor = m.contract("Attestor", [process.env.RECLAIM_ADDRESS!], {libraries: {Claims: claims}});
 
   m.call(attestor,"setBaseURI",[
-    "ipfs://bafybeic7co3jyfqum2go2ef4ba3ola5oolabb65dypjpchh6dx3wirqtyi"
+    "ipfs://bafybeibiieuysql3mqejxxjytuct2lfytqhbsf2h7n54m27wtib2vnrxue"
   ])
 
 
