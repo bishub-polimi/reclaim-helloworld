@@ -14,7 +14,8 @@ export default {
         red: "#dc2626",
         stone: "#f5f5f4",
         black: "#000000",
-        green: "#008000"
+        green: "#008000",
+        grey: "#e5e7eb"
       },
       keyframes: {
         shine: {

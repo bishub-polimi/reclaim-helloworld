@@ -1,4 +1,3 @@
-import { Proof, transformForOnchain } from "@reclaimprotocol/js-sdk";
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { useWriteContracts } from "wagmi/experimental";
 import {useEffect} from "react";
@@ -6,12 +5,8 @@ import artifacts from "../abi/Attestor.json";
 import NotificationBanner from "./NotificationBanner";
 import { useNotifications } from "@/hooks/useNotifications";
 
-type ClaimSectionProps = {
-    proof: Proof | string | undefined;
-    id: number
-}
 
-export default function ClaimToken(props: ClaimSectionProps) {
+export default function ClaimBadge() {
     const account = useAccount();
     const { notifications, addNotification, removeNotification } = useNotifications();
     const attestorAddress = process.env.NEXT_PUBLIC_TOKEN_CONTRACT_ADDRESS;
@@ -43,7 +38,7 @@ export default function ClaimToken(props: ClaimSectionProps) {
     const { writeContractsAsync, isPending: isPendingCB } = useWriteContracts({
         mutation: {
             onError: (error: Error) => {
-                console.error("[ClaimToken] User Operation Error:", error);
+                console.error("[ClaimBadge] User Operation Error:", error);
                 const errorMessage = `Errore durante l'invio: ${error.message.split('\n')[0]}`;
                 addNotification(errorMessage, 'error');
             }
@@ -51,11 +46,9 @@ export default function ClaimToken(props: ClaimSectionProps) {
     });
 
 
-    const getSolidityProof = async () => {
+    const getBadge = async () => {
         const args = [
-            account.address,
-            "0x0000000000000000000000000000000000000000000000000000000000000000",
-            transformForOnchain(props.proof!)
+            account.address
         ];
 
         try {
@@ -71,7 +64,7 @@ export default function ClaimToken(props: ClaimSectionProps) {
                     contracts: [{
                         address: attestorAddress,
                         abi: artifacts.abi,
-                        functionName: 'mint',
+                        functionName: 'mintBadge',
                         args
                     }],
                     capabilities
@@ -90,12 +83,13 @@ export default function ClaimToken(props: ClaimSectionProps) {
                 const result = await writeContractAsync({
                     address: attestorAddress,
                     abi: artifacts.abi,
-                    functionName: 'mint',
+                    functionName: 'mintBadge',
                     args
                 });
 
                 setTimeout(() => {
                     addNotification(`Transazione inviata: `, 'success', result);
+                    addNotification(`In attesa del minting...`, 'success');
                     console.log("Transaction result:", result);
                 }, 1500);
 
@@ -105,7 +99,7 @@ export default function ClaimToken(props: ClaimSectionProps) {
 
             }
         } catch (error: any) {
-            console.error("[ClaimToken] Error:", error);
+            console.error("[ClaimBadge] Error:", error);
             const errorMessage = `Errore durante il mint: ${error.message.split('\n')[0]}`;
             addNotification(errorMessage, 'error');
         }
@@ -119,11 +113,11 @@ export default function ClaimToken(props: ClaimSectionProps) {
             />
 
             <button
-                className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full'
-                onClick={getSolidityProof}
+                className='bg-blue-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full'
+                onClick={getBadge}
                 disabled={isPending || isPendingCB}
             >
-                {isPending || isPendingCB ? 'Minting...' : 'Ottieni il Token'}
+                {isPending || isPendingCB ? 'Minting...' : 'Ottieni il Badge'}
             </button>
         </div>
     );
