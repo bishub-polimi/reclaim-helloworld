@@ -43,7 +43,7 @@ export default function ClaimToken(props: ClaimSectionProps) {
     const { writeContractsAsync, isPending: isPendingCB } = useWriteContracts({
         mutation: {
             onError: (error: Error) => {
-                console.error("[ClaimToken] UserOperation Error:", error);
+                console.error("[ClaimToken] User Operation Error:", error);
                 const errorMessage = `Errore durante l'invio: ${error.message.split('\n')[0]}`;
                 addNotification(errorMessage, 'error');
             }
