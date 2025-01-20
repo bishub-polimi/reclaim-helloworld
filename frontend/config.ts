@@ -42,6 +42,6 @@ const connectors = connectorsForWallets(
 export const config = getDefaultConfig({
   appName: 'Demo Web3Hub',
   projectId: projectId,
-  chains: [baseSepolia], //, base, custom],
+  chains: [base], //, baseSepolia, custom],
   connectors, 
 });

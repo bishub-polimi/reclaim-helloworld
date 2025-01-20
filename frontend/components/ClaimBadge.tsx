@@ -89,7 +89,6 @@ export default function ClaimBadge() {
 
                 setTimeout(() => {
                     addNotification(`Transazione inviata: `, 'success', result);
-                    addNotification(`In attesa del minting...`, 'success');
                     console.log("Transaction result:", result);
                 }, 1500);
 

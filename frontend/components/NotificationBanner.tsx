@@ -12,7 +12,7 @@ const NotificationBanner = ({ notifications, onClose }: NotificationStackProps) 
   if (!notifications.length) return null;
 
   const handleTxClick = (txHash: string) => {
-    const baseUrl = 'https://base-sepolia.blockscout.com';
+    const baseUrl = 'https://base.blockscout.com';
     const path = txHash.length > 66 ? 'op' : 'tx';
     const hash = txHash.length > 66 ? extractMainHash(txHash) : txHash;
     window.open(`${baseUrl}/${path}/${hash}`, '_blank');

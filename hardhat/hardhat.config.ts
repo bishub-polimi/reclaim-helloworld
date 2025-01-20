@@ -18,6 +18,12 @@ const config: HardhatUserConfig = {
       url: "https://base-sepolia-rpc.publicnode.com",
       accounts: [`0x${process.env.PRIVATE_KEY}`],
       timeout: 60000,
+    },
+
+    base: {
+      url: "https://mainnet.base.org",
+      accounts: [`0x${process.env.PRIVATE_KEY}`],
+      timeout: 60000,
     }
 
   }
