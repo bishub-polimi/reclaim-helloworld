@@ -74,6 +74,12 @@ contract Attestor is ERC1155, Ownable {
 
     }
 
+    function mintBadge(address account) public
+    {
+       require(balanceOf(account, 3) < 1, "Badge riscattabile una sola volta");
+       _mint(account, 3, 1, "");
+    }
+
     /* function stringToUint(string memory str) internal pure returns (uint) {
         bytes memory b = bytes(str);
         uint result = 0;
