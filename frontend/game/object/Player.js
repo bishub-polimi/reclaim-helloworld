@@ -90,6 +90,14 @@ export default class PlayerSprite extends Phaser.Physics.Arcade.Sprite {
     update(time, delta) {
         this.timeManage.nowTime = time
 
+        if(!this.isTester){
+            let isTester = localStorage.getItem("isAlphaTester");
+            this.isTester = isTester && isTester == "true" ? true : false 
+            if(this.isTester) {
+                this.ability.fireball = true
+            }
+        } 
+
         if(!this.hasSkin){
             let res = localStorage.getItem("sustainabilityScore");
             if(JSON.parse(res) > 0){
@@ -229,7 +237,7 @@ export default class PlayerSprite extends Phaser.Physics.Arcade.Sprite {
         }
         const SMALL_MODE = () => {
             this.bigMode = false
-            this.ability.fireball = this.isTester//false
+            this.ability.fireball = this.isTester ? this.isTester : false//false
             this.ability.invincible = false
             // this.setTexture("big_mario",this.anims.currentFrame.index)
             console.log(this.scene)
