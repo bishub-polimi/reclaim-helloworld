@@ -62,16 +62,20 @@ export default class PreLoadScene extends Phaser.Scene {
         this.load.image('tileset_levels', 'resource/tilemap/tileset_levels.png')
         this.load.image('red', 'resource/particles/red.png');
         // 生物等
-        this.load.spritesheet('small_mario', 'resource/tilemap/small_mario.png', {frameWidth: 480, frameHeight: 480})
-        this.load.spritesheet('small_mario_skin', 'resource/tilemap/small_mario_special.png', {frameWidth: 480, frameHeight: 480})
+        //this.load.spritesheet('small_mario', 'resource/tilemap/small_mario.png', {frameWidth: 480, frameHeight: 480})
+        this.load.spritesheet('small_mario', 'resource/tilemap/small_mario.png', {frameWidth: 16, frameHeight: 16})
+        //this.load.spritesheet('small_mario_skin', 'resource/tilemap/small_mario_special.png', {frameWidth: 480, frameHeight: 480})
+        this.load.spritesheet('small_mario_skin', 'resource/tilemap/small_mario_special.png', {frameWidth: 16, frameHeight: 16})
         this.load.spritesheet('big_mario', 'resource/tilemap/big_mario.png', {frameWidth: 16, frameHeight: 32})
+        this.load.spritesheet('big_mario_skin', 'resource/tilemap/big_mario_special.png', {frameWidth: 16, frameHeight: 32})
         this.load.spritesheet('goomba_red', 'resource/img/Enemies/Goomba/goomba_red.png', {
-            frameWidth: 480,//16,
-            frameHeight: 480,//16,
+            frameWidth: 16,
+            frameHeight: 16,
         })
         // 临时为了不让蘑菇出错
         this.load.image("initTexture", "resource/img/Items/coin.png")
         this.load.image("heart","resource/icons/heart.png")
+        this.load.image("perkZero","resource/icons/perk0.png")
         this.load.image("perkOne","resource/icons/skin.png")
         this.load.image("perkTwo","resource/icons/perk2.png")
         this.load.image("perkThree","resource/icons/perk3.png")
@@ -222,7 +226,7 @@ export default class PreLoadScene extends Phaser.Scene {
     onFileProgress(file) {
         // debugger
         try{
-            this.assetText.setText('正在加载: ' + file.src)
+            this.assetText.setText('Loading: ' + file.src)
         } catch (e) {
             console.log(e)
         }

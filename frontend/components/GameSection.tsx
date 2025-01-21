@@ -72,10 +72,18 @@ export default function GameSection() {
         args: [account.address,2],
       })
 
+      const { data: b4 } = useReadContract({
+        address: attestorAddress,
+        abi: artifacts.abi,
+        functionName: 'balanceOf',
+        args: [account.address,3],
+      })
+
     const game = usePhaserGame(config);
 
     useEffect(()=>{
         let count = 0;
+        let isAlphaTester = false;
 
         if(b1 && b1 > BigInt(0)){
             count++;
@@ -89,8 +97,14 @@ export default function GameSection() {
             count++;
         } 
 
-        localStorage.setItem("sustainabilityScore", JSON.stringify(count))   
-    }, [b1,b2,b3]) 
+        if(b4 && b4 > BigInt(0)){
+            isAlphaTester = true;
+        } 
+
+        localStorage.setItem("sustainabilityScore", JSON.stringify(count))
+        localStorage.setItem("isAlphaTester", JSON.stringify(isAlphaTester))   
+
+    }, [b1,b2,b3,b4]) 
 
     return (
         <div className="w-full">

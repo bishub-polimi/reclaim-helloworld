@@ -7,8 +7,8 @@ export default class PlayerSprite extends Phaser.Physics.Arcade.Sprite {
     constructor(config, gameConfig) {
         super(config.scene, config.x, config.y, "initTexture")
 
-        this.scaleX = 0.07; 
-        this.scaleY = this.scaleX;
+        //this.scaleX = 0.06; 
+        //this.scaleY = this.scaleX;
 
         this.hasSkin = false;
 
@@ -19,7 +19,10 @@ export default class PlayerSprite extends Phaser.Physics.Arcade.Sprite {
         this.setCollideWorldBounds(true) // 世界碰撞
 
         this.bigMode = false    // 改变大小需使用 changeMode(mode)
-        this.fireMode = false   // 火 mario
+
+        this.fireMode = false 
+          // 火 mario
+
         this.direction = 1 // 向右
         this.speed = 150
         this.jumpSpeed = 210
@@ -35,8 +38,12 @@ export default class PlayerSprite extends Phaser.Physics.Arcade.Sprite {
         this.life = gameConfig.life || 3  //重玩的话继承原来的生命值
         this.alive = true
         this.isJumping = false
+
+        let isTester = localStorage.getItem("isAlphaTester");
+        this.isTester = isTester && isTester == "true" ? true : false, 
+
         this.ability = {
-            fireball: false,   // 丢火球
+            fireball: this.isTester,   // 丢火球
             invincible: false, // 无敌(吃星星)
             immune: false,  // 免疫伤害,被伤害后会触发一段时间免疫
         }
@@ -91,15 +98,16 @@ export default class PlayerSprite extends Phaser.Physics.Arcade.Sprite {
         }
 
         if (this.alive) {
-            // 控制移动
+
             this.isJumping = this.body.blocked.none && this.body.velocity !== 0
-            /**
-             *   TODO: BUG 蹲下前有速度将会无限滑行.需要重新设置下蹲后的size
-             */
+
             if (this.keys.down.isDown) {
                 if (this.bigMode) {
-                    this.anims.play("bigSquat_anim")
-                    // this.setSize(16,22)
+                    if(this.hasSkin){
+                        this.anims.play("skinBigSquat_anim")
+                    } else {
+                        this.anims.play("bigSquat_anim")
+                    }
                 }
             }
             else if (this.keys.left.isDown) {
@@ -107,7 +115,10 @@ export default class PlayerSprite extends Phaser.Physics.Arcade.Sprite {
                 this.body.velocity.x = this.direction * this.speed
                 if (this.isJumping) return   // 为了阻挡左右的动画覆盖跳跃动画
                 this.bigMode ? 
-                    this.anims.play('bigLeft_anim', true) 
+                    this.hasSkin ?
+                        this.anims.play('skinBigLeft_anim', true) 
+                        :
+                        this.anims.play('bigLeft_anim', true) 
                     : 
                     this.hasSkin ?
                         this.anims.play('skinLeft_anim',true)
@@ -119,7 +130,10 @@ export default class PlayerSprite extends Phaser.Physics.Arcade.Sprite {
                 this.body.velocity.x = this.direction * this.speed
                 if (this.isJumping) return // 为了阻挡左右的动画覆盖跳跃动画
                 this.bigMode ? 
-                    this.anims.play('bigRight_anim', true) 
+                    this.hasSkin ?
+                        this.anims.play('skinBigRight_anim', true) 
+                        :
+                        this.anims.play('bigRight_anim', true) 
                     : 
                     this.hasSkin ?
                         this.anims.play('skinRight_anim', true)
@@ -135,7 +149,10 @@ export default class PlayerSprite extends Phaser.Physics.Arcade.Sprite {
             else if (this.isJumping) {
                 if (this.direction === 1) {
                     this.bigMode ? 
-                        this.anims.play('bigJumpRight_anim', true) 
+                        this.hasSkin ?
+                            this.anims.play('skinBigJumpRight_anim', true)
+                            :
+                            this.anims.play('bigJumpRight_anim', true)  
                         : 
                         this.hasSkin ?
                             this.anims.play('skinJumpRight_anim', true)
@@ -143,7 +160,10 @@ export default class PlayerSprite extends Phaser.Physics.Arcade.Sprite {
                             this.anims.play('jumpRight_anim', true)
                 } else {
                     this.bigMode ? 
-                        this.anims.play('bigJumpLeft_anim', true) 
+                        this.hasSkin ?
+                            this.anims.play('skinBigJumpLeft_anim', true) 
+                            :
+                            this.anims.play('bigJumpLeft_anim', true) 
                         : 
                         this.hasSkin ?
                             this.anims.play('skinJumpLeft_anim', true)
@@ -155,7 +175,10 @@ export default class PlayerSprite extends Phaser.Physics.Arcade.Sprite {
                 this.body.velocity.x = 0
                 if (this.direction === 1) {
                     this.bigMode ? 
-                        this.anims.play('bigFaceRight_anim', true) 
+                        this.hasSkin ?
+                            this.anims.play('skinBigFaceRight_anim', true) 
+                            :
+                            this.anims.play('bigFaceRight_anim', true) 
                         : 
                         this.hasSkin ?
                             this.anims.play('skinFaceRight_anim', true)
@@ -164,7 +187,10 @@ export default class PlayerSprite extends Phaser.Physics.Arcade.Sprite {
 
                 } else {
                     this.bigMode ?
-                        this.anims.play('bigFaceLeft_anim', true) 
+                        this.hasSkin ?
+                            this.anims.play('skinBigFaceLeft_anim', true) 
+                            :
+                            this.anims.play('bigFaceLeft_anim', true) 
                         : 
                         this.hasSkin ?
                             this.anims.play('skinFaceLeft_anim', true)
@@ -203,26 +229,25 @@ export default class PlayerSprite extends Phaser.Physics.Arcade.Sprite {
         }
         const SMALL_MODE = () => {
             this.bigMode = false
-            this.ability.fireball = false
+            this.ability.fireball = this.isTester//false
             this.ability.invincible = false
             // this.setTexture("big_mario",this.anims.currentFrame.index)
             console.log(this.scene)
             // this.setTexture("atalas", this.frame.name)    // 替换内容和当前 frame 动作相同
             this.setSize(16, 16)
             this.setOffset(0, 0)
-
             // this.originY = 0 // 此游戏对象的垂直原点
         }
-        const SMALL_SKIN_MODE = () => {
+/*         const SMALL_SKIN_MODE = () => {
             this.bigMode = false
             this.ability.fireball = false
             this.ability.invincible = false
             this.setTexture("small_mario_skin",this.anims.currentFrame.index)
             console.log(this.scene)
-        }
+        } */
         const BIG_MODE = () => {
             this.bigMode = true
-            this.ability.fireball = false
+            this.ability.fireball = this.isTester ? this.isTester : false
             this.ability.invincible = false
             //this.setTexture("big_mario",this.anims.currentFrame.index)
             // this.setTexture("big_mario", this.frame.name)    // 替换内容和当前 frame 动作相同
@@ -243,7 +268,8 @@ export default class PlayerSprite extends Phaser.Physics.Arcade.Sprite {
         }
 
         //  模式只能按序升降级
-        const MODE_ARR = [DIE_MODE, this.hasSkin ? SMALL_MODE : SMALL_SKIN_MODE, BIG_MODE, FIRE_MODE]
+        //const MODE_ARR = [DIE_MODE, this.hasSkin ? SMALL_MODE : SMALL_SKIN_MODE, BIG_MODE, FIRE_MODE]
+        const MODE_ARR = [DIE_MODE, SMALL_MODE, BIG_MODE, FIRE_MODE]
 
 
         if (condition === "upgrade") {
@@ -357,6 +383,49 @@ export default class PlayerSprite extends Phaser.Physics.Arcade.Sprite {
             repeat: 1
         })
 
+        //skin big
+        this.scene.anims.create({
+            key: "skinBigRight_anim",
+            frames: this.scene.anims.generateFrameNumbers("big_mario_skin", {start: 2, end: 4}),
+            frameRate: 8,
+            repeat: -1
+        })
+        this.scene.anims.create({
+            key: "skinBigLeft_anim",
+            frames: this.scene.anims.generateFrameNumbers("big_mario_skin", {start: 8, end: 10}),
+            frameRate: 8,
+            repeat: -1
+        })
+        this.scene.anims.create({
+            key: "skinBigFaceRight_anim",
+            frames: this.scene.anims.generateFrameNumbers("big_mario_skin", {start: 1, end: 1}),
+            frameRate: 1,
+            repeat: 1
+        })
+        this.scene.anims.create({
+            key: "skinBigFaceLeft_anim",
+            frames: this.scene.anims.generateFrameNumbers("big_mario_skin", {start: 11, end: 11}),
+            frameRate: 1,
+            repeat: 1
+        })
+        this.scene.anims.create({
+            key: "skinBigJumpRight_anim",
+            frames: this.scene.anims.generateFrameNumbers("big_mario_skin", {start: 5, end: 5}),
+            frameRate: 1,
+            repeat: 1
+        })
+        this.scene.anims.create({
+            key: "skinBigJumpLeft_anim",
+            frames: this.scene.anims.generateFrameNumbers("big_mario_skin", {start: 7, end: 7}),
+            frameRate: 1,
+            repeat: 1
+        })
+        this.scene.anims.create({
+            key: "skinBigSquat_anim",
+            frames: this.scene.anims.generateFrameNumbers("big_mario_skin", {start: 6, end: 6}),
+            frameRate: 1,
+            repeat: 1
+        })
 
     }
 
@@ -494,8 +563,12 @@ export default class PlayerSprite extends Phaser.Physics.Arcade.Sprite {
         //  没有判定,会重复执行动画
         if (!this.dieAnimPlaying) {
             this.dieAnimPlaying = true
-
-            this.anims.play("die_anim")
+            if(this.hasSkin){
+                this.anims.play("skinDie_anim")
+            } else {
+                this.anims.play("die_anim")
+            }   
+                
             this.scene.cameras.main.stopFollow()
             // 死亡动画
             let timeline = this.scene.tweens.createTimeline()

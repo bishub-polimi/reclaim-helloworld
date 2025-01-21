@@ -95,12 +95,13 @@ export default class GameScene extends Phaser.Scene {
         // new player
         this.player = new PlayerSprite({
             scene: this,
-            // x: 50, y: 175,
-            x: 260, y: 110,
+             x: 50, y: 175,
+           // x: 260, y: 110,
 
         }, this.gameConfig.player)
 
-        this.player.setSize(480, 480);
+        //this.player.setSize(480, 480);
+        this.player.setSize(16, 16);
 
 
         // camera 相关
@@ -241,19 +242,25 @@ export default class GameScene extends Phaser.Scene {
             this.livesIcons = this.add.image(13*(i+1), 11, "heart").setScale(0.7).setScrollFactor(0)
         }
 
+        let isTester = localStorage.getItem("isAlphaTester")
+        if(isTester && isTester=="true"){
+            this.perkZero = this.add.image(160, 11, "perkZero").setScale(0.7).setScrollFactor(0)
+        }
+
         let score = localStorage.getItem("sustainabilityScore")
         if(score){
             score = JSON.parse(score)
             if(score > 0){
-                this.perkOne = this.add.image(160, 11, "perkOne").setScale(0.7).setScrollFactor(0)
+                this.perkOne = this.add.image(173, 11, "perkOne").setScale(0.7).setScrollFactor(0)
                 if(score > 1){
-                    this.perkTwo = this.add.image(173, 11, "perkTwo").setScale(0.7).setScrollFactor(0)
+                    this.perkTwo = this.add.image(186, 11, "perkTwo").setScale(0.7).setScrollFactor(0)
                     if(score > 2){
-                        this.perkThree = this.add.image(186, 11, "perkThree").setScale(0.7).setScrollFactor(0)
+                        this.perkThree = this.add.image(199, 11, "perkThree").setScale(0.7).setScrollFactor(0)
                     }
                 }
             }
         }
+
     }
 
     // 创建动画
@@ -388,8 +395,8 @@ export default class GameScene extends Phaser.Scene {
                 obj.y + 8,
                 "goomba_red"
             )
-            goomba._scaleX=0.06
-            goomba._scaleY=0.06
+            //goomba._scaleX=0.06
+            //goomba._scaleY=0.06
             this.enemiesGroup.add(goomba)
         })
 
@@ -607,5 +614,6 @@ export default class GameScene extends Phaser.Scene {
         this.scene.start('GameScene', restartConfig)
 
     }
+
 }
 
