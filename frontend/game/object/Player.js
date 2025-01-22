@@ -598,7 +598,7 @@ export default class PlayerSprite extends Phaser.Physics.Arcade.Sprite {
 
                     } else {
                         //  生命用完,结束
-                        this.scene.scene.start('gameOverScene', {
+                        this.scene.scene.start('GameOverScene', {
                             result: "lose",
                             score: this.scene.score,
                         })

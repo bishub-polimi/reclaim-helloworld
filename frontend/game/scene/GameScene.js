@@ -508,6 +508,7 @@ export default class GameScene extends Phaser.Scene {
         this.physics.add.collider(this.player, this.finishLevelLayer, (player, tile) => {
             // blocked 此物体是否与瓷砖或世界边界相撞
             if (player.body.blocked.right || player.body.blocked.left) {
+                this.score += 5000
                 this.end("win")
             }
         })
@@ -574,7 +575,10 @@ export default class GameScene extends Phaser.Scene {
                 delay: 1000,
                 callbackScope: this,
                 callback: () => {
-                    this.scene.start('gameOverScene', 'lose')
+                    this.scene.start('GameOverScene', {
+                        result: "lose",
+                        score: this.score,
+                    })
                 },
 
             })
@@ -585,7 +589,10 @@ export default class GameScene extends Phaser.Scene {
                 delay: 1000,
                 callbackScope: this,
                 callback: () => {
-                    this.scene.start('gameOverScene', 'win')
+                    this.scene.start('GameOverScene', {
+                            result: "win",
+                            score: this.score,
+                        })
                 },
             })
         }
